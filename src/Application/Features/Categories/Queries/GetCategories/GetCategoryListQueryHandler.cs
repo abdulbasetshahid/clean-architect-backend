@@ -3,7 +3,7 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Queries.GetCategories
+namespace Application.Features.Categories.Queries.GetCategories
 {
     public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, List<CategoryListVm>>
     {
