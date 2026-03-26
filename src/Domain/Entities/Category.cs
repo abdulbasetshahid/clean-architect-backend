@@ -2,8 +2,8 @@
 
 namespace Domain.Entities;
 
-public class Category: AuditableEntity, IEntity<Guid>
+public class Category : AuditableEntity, IEntity<Guid>
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }
