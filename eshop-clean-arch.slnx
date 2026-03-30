@@ -1,9 +1,13 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="Api/Api.csproj" Id="fb107c7e-36ba-438c-bf60-6dd2d7e0e795" />
+    <Project Path="src/Infrastructure/Infrastructure.csproj" Id="ee90756e-6c20-4efe-934f-b9461e9cff3a" />
+  </Folder>
+  <Folder Name="/src/Core/">
     <Project Path="src/Application/Application.csproj" />
     <Project Path="src/Domain/Domain.csproj" />
-    <Project Path="src/Infrastructure/Infrastructure.csproj" Id="ee90756e-6c20-4efe-934f-b9461e9cff3a" />
+  </Folder>
+  <Folder Name="/src/Infra/">
     <Project Path="src/Persistence/Persistence.csproj" Id="da6b0841-8513-4f0a-ab22-e60aea66b2a2" />
   </Folder>
   <Folder Name="/tests/" />
