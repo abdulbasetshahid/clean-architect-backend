@@ -1,8 +1,8 @@
-﻿using Domain.Entities;
+﻿using EShop.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.Configurations;
+namespace EShop.Persistence.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {

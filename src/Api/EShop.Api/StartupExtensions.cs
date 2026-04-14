@@ -1,5 +1,6 @@
-﻿using EShop.Infrastructure;
-using Persistence;
+﻿using EShop.Application;
+using EShop.Infrastructure;
+using EShop.Persistence;
 
 namespace EShop.Api
 {

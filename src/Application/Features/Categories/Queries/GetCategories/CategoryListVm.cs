@@ -1,4 +1,4 @@
-﻿namespace Application.Features.Categories.Queries.GetCategories;
+﻿namespace EShop.Application.Features.Categories.Queries.GetCategories;
 
 public class CategoryListVm
 {

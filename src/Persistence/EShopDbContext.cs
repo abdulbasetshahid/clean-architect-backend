@@ -1,8 +1,8 @@
-﻿using Domain.Common;
-using Domain.Entities;
+﻿using EShop.Domain.Common;
+using EShop.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence
+namespace EShop.Persistence
 {
     public class EShopDbContext : DbContext
     {

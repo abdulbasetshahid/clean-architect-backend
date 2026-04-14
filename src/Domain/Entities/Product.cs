@@ -1,4 +1,4 @@
-using Domain.Common;
+using EShop.Domain.Common;
 
 public class Product : AuditableEntity, IEntity<Guid>
 {

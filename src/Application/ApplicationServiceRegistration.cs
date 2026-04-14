@@ -1,7 +1,7 @@
-﻿using Application.Profiles;
+﻿using EShop.Application.Profiles;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application
+namespace EShop.Application
 {
     public static class ApplicationServiceRegistration
     {

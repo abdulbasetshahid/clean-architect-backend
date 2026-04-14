@@ -1,8 +1,8 @@
-﻿using Application.Contracts.Persistence;
-using Domain.Entities;
-using Persistence.Repositories.Common;
+﻿using EShop.Application.Contracts.Persistence;
+using EShop.Domain.Entities;
+using EShop.Persistence.Repositories.Common;
 
-namespace Persistence.Repositories;
+namespace EShop.Persistence.Repositories;
 
 public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
 {

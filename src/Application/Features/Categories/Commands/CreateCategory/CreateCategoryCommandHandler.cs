@@ -1,9 +1,9 @@
-﻿using Application.Contracts.Persistence;
-using AutoMapper;
-using Domain.Entities;
+﻿using AutoMapper;
+using EShop.Application.Contracts.Persistence;
+using EShop.Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Categories.Commands.CreateCategory
+namespace EShop.Application.Features.Categories.Commands.CreateCategory
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Guid>
     {

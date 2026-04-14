@@ -1,7 +1,6 @@
-﻿
-using Application.Models.Mail;
+﻿using EShop.Application.Models.Mail;
 
-namespace Application.Contracts.Infrastructure;
+namespace EShop.Application.Contracts.Infrastructure;
 
 public interface IEmailService
 {

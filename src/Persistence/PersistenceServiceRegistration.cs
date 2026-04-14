@@ -1,11 +1,11 @@
-﻿using Application.Contracts.Persistence;
+﻿using EShop.Application.Contracts.Persistence;
+using EShop.Persistence.Repositories;
+using EShop.Persistence.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.Repositories;
-using Persistence.Repositories.Common;
 
-namespace Persistence
+namespace EShop.Persistence
 {
     public static class PersistenceServiceRegistration
     {

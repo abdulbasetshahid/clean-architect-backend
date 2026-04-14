@@ -1,4 +1,4 @@
-﻿namespace Application.Contracts;
+﻿namespace EShop.Application.Contracts;
 
 public interface IAuthenticationService
 {

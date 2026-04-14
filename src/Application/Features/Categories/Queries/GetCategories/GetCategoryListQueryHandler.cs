@@ -1,9 +1,9 @@
-﻿using Application.Contracts.Persistence;
-using AutoMapper;
-using Domain.Entities;
+﻿using AutoMapper;
+using EShop.Application.Contracts.Persistence;
+using EShop.Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Categories.Queries.GetCategories
+namespace EShop.Application.Features.Categories.Queries.GetCategories
 {
     public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, List<CategoryListVm>>
     {

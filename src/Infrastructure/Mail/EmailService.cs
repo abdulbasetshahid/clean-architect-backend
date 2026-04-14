@@ -1,5 +1,5 @@
-﻿using Application.Contracts.Infrastructure;
-using Application.Models.Mail;
+﻿using EShop.Application.Contracts.Infrastructure;
+using EShop.Application.Models.Mail;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;

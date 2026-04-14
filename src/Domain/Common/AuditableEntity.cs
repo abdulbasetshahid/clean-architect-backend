@@ -1,4 +1,4 @@
-﻿namespace Domain.Common;
+﻿namespace EShop.Domain.Common;
 
 public class AuditableEntity
 {

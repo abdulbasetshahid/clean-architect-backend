@@ -1,7 +1,7 @@
-﻿using Application.Contracts.Persistence;
+﻿using EShop.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence.Repositories.Common;
+namespace EShop.Persistence.Repositories.Common;
 
 public class BaseRepository<T> : IAsyncRepository<T> where T : class
 {

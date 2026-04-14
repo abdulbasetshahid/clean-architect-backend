@@ -1,9 +1,9 @@
-﻿using Application.Features.Categories.Commands.CreateCategory;
-using Application.Features.Categories.Queries.GetCategories;
-using AutoMapper;
-using Domain.Entities;
+﻿using AutoMapper;
+using EShop.Application.Features.Categories.Commands.CreateCategory;
+using EShop.Application.Features.Categories.Queries.GetCategories;
+using EShop.Domain.Entities;
 
-namespace Application.Profiles;
+namespace EShop.Application.Profiles;
 
 public class MappingProfiles : Profile
 {

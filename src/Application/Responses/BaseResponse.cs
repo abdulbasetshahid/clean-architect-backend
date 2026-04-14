@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RedPaperEMS.Application.Responses
+namespace EShop.Application.Responses
 {
     public class BaseResponse
     {

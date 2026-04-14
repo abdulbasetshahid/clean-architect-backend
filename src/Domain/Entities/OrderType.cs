@@ -1,6 +1,6 @@
-﻿using Domain.Common;
+﻿using EShop.Domain.Common;
 
-namespace Domain.Entities;
+namespace EShop.Domain.Entities;
 
 public class OrderType : IEntity<int>
 {

@@ -1,4 +1,4 @@
-﻿namespace Application.Models.Mail;
+﻿namespace EShop.Application.Models.Mail;
 
 public class Email
 {

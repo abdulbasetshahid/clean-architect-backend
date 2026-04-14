@@ -1,4 +1,4 @@
-﻿using Application.Contracts.Infrastructure;
+﻿using EShop.Application.Contracts.Infrastructure;
 using EShop.Infrastructure.FileExport;
 using EShop.Infrastructure.Mail;
 using Microsoft.Extensions.Configuration;
