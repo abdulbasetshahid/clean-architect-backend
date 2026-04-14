@@ -13,7 +13,7 @@ namespace Persistence
            IConfiguration configuration)
         {
             services.AddDbContext<EShopDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("RedEMSConnectionString")));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 

@@ -6,6 +6,7 @@ namespace Persistence.Repositories.Common;
 public class BaseRepository<T> : IAsyncRepository<T> where T : class
 {
     protected readonly EShopDbContext _dbContext;
+
     public BaseRepository(EShopDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -17,7 +18,7 @@ public class BaseRepository<T> : IAsyncRepository<T> where T : class
 
     public virtual async Task<IReadOnlyList<T>> ListAllAsync()
     {
-        return await _dbContext.Set<T>().ToListAsync();
+        return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
     }
     public virtual async Task<T> AddAsync(T entity)
     {
@@ -35,5 +36,10 @@ public class BaseRepository<T> : IAsyncRepository<T> where T : class
     {
         _dbContext.Set<T>().Remove(entity);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public IQueryable<T> All()
+    {
+        return _dbContext.Set<T>();
     }
 }
