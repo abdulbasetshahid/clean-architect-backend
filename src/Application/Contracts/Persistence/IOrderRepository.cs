@@ -1,8 +1,7 @@
 ﻿using EShop.Domain.Entities;
 
-namespace EShop.Application.Contracts.Persistence
+namespace EShop.Application.Contracts.Persistence;
+
+public interface IOrderRepository : IAsyncRepository<Order>
 {
-    public interface IOrderRepository : IAsyncRepository<Order>
-    {
-    }
 }
