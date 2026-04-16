@@ -15,6 +15,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.HasIndex(e => e.OrderNumber).IsUnique();
 
         builder.Property(e => e.OrderNumber).IsRequired().HasMaxLength(50);
+        builder.Property(e => e.CustomerName).IsRequired().HasMaxLength(200);
+        builder.Property(e => e.CustomerPhone).IsRequired().HasMaxLength(50);
         builder.Property(e => e.SubTotal).HasPrecision(18, 2);
         builder.Property(e => e.TaxAmount).HasPrecision(18, 2);
         builder.Property(e => e.ShippingAmount).HasPrecision(18, 2);

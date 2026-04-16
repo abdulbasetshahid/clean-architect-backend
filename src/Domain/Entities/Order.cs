@@ -8,6 +8,10 @@ public class Order : AuditableEntity, IEntity<Guid>
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
 
+    public required string CustomerName { get; set; }
+
+    public required string CustomerPhone { get; set; }
+
     public required string OrderNumber { get; set; }
     public DateTime OrderDate { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
@@ -21,7 +25,7 @@ public class Order : AuditableEntity, IEntity<Guid>
     public bool IsPaid { get; set; }
 
     public int OrderTypeId { get; set; }
-    public required OrderType OrderType { get; set; }
+    public OrderType OrderType { get; set; } = null!;
 
     public ICollection<OrderDetails> OrderDetails { get; set; } = default!;
 }

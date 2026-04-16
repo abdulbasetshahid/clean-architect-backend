@@ -20,7 +20,7 @@ public class OrderDetailsConfiguration : IEntityTypeConfiguration<OrderDetails>
             .HasForeignKey(e => e.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<Product>()
+        builder.HasOne(e => e.Product)
             .WithMany()
             .HasForeignKey(e => e.ProductId)
             .OnDelete(DeleteBehavior.Restrict);

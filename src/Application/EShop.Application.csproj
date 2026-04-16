@@ -22,8 +22,6 @@
   <ItemGroup>
     <Folder Include="Features\Delivery\Commands\" />
     <Folder Include="Features\Delivery\Queries\" />
-    <Folder Include="Features\Orders\Commands\" />
-    <Folder Include="Features\Orders\Queries\" />
   </ItemGroup>
 
 </Project>
