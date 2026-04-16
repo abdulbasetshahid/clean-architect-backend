@@ -13,6 +13,8 @@ namespace EShop.Api
             builder.Services.AddPersistenceServices(builder.Configuration);
 
             builder.Services.AddControllers();
+            builder.Services.AddProblemDetails();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
             builder.Services.AddCors(options => options.AddPolicy("open", policy => policy.WithOrigins([
                 builder.Configuration["ApiUrl"] ?? "https://localhost:5001",
@@ -27,6 +29,7 @@ namespace EShop.Api
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
+            app.UseExceptionHandler();
             app.UseCors("open");
             app.UseHttpsRedirection();
             app.MapControllers();

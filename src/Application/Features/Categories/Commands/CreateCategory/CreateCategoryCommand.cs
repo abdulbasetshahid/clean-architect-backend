@@ -1,11 +1,8 @@
 ﻿using MediatR;
 
-namespace EShop.Application.Features.Categories.Commands.CreateCategory
-{
-    public class CreateCategoryCommand : IRequest<Guid>
-    {
-        public int Id { get; set; }
+namespace EShop.Application.Features.Categories.Commands.CreateCategory;
 
-        public required string Name { get; set; }
-    }
+public class CreateCategoryCommand : IRequest<Guid>
+{
+    public required string Name { get; set; }
 }

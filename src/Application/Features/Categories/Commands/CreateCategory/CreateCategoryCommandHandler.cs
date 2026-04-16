@@ -1,27 +1,29 @@
-﻿using AutoMapper;
-using EShop.Application.Contracts.Persistence;
+﻿using EShop.Application.Contracts.Persistence;
 using EShop.Domain.Entities;
 using MediatR;
 
-namespace EShop.Application.Features.Categories.Commands.CreateCategory
+namespace EShop.Application.Features.Categories.Commands.CreateCategory;
+
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Guid>
 {
-    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Guid>
+    private readonly ICategoryRepository _categoryRepository;
+
+    public CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
     {
-        private readonly IAsyncRepository<Category> _categoryRepository;
-        private readonly IMapper _mapper;
-        public CreateCategoryCommandHandler(IAsyncRepository<Category> categoryRepository, IMapper mapper)
+        _categoryRepository = categoryRepository;
+    }
+
+    public async Task<Guid> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    {
+        var category = new Category
         {
-            _categoryRepository = categoryRepository;
-            _mapper = mapper;
-        }
+            Id = Guid.NewGuid(),
+            Name = request.Name.Trim(),
+            Products = new List<Product>()
+        };
 
-        public async Task<Guid> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
-        {
-            var category = _mapper.Map<Category>(request);
+        await _categoryRepository.AddAsync(category);
 
-            await _categoryRepository.AddAsync(category);
-
-            return category.Id;
-        }
+        return category.Id;
     }
 }

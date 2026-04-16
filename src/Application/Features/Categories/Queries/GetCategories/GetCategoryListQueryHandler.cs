@@ -7,11 +7,11 @@ namespace EShop.Application.Features.Categories.Queries.GetCategories
 {
     public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, List<CategoryListVm>>
     {
-        private readonly IAsyncRepository<Category> _categoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
 
-        public GetCategoryListQueryHandler(IAsyncRepository<Category> categoryRepository, IMapper mapper)
+        public GetCategoryListQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using EShop.Application.Features.Categories.Commands.CreateCategory;
 using EShop.Application.Features.Categories.Queries.GetCategories;
+using EShop.Application.Features.Products.Queries.GetProductById;
+using EShop.Application.Features.Products.Queries.GetProducts;
 using EShop.Domain.Entities;
 
 namespace EShop.Application.Profiles;
@@ -11,6 +12,10 @@ public class MappingProfiles : Profile
     {
         CreateMap<Category, CategoryListVm>().ReverseMap();
 
-        CreateMap<Category, CreateCategoryCommand>().ReverseMap();
+        CreateMap<Product, ProductListVm>()
+            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name));
+
+        CreateMap<Product, ProductDetailVm>()
+            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name));
     }
 }

@@ -1,10 +1,10 @@
-﻿namespace EShop.Api.Controllers;
+namespace EShop.Api.Controllers;
 
-public class CategoryController : BaseApiController
+public class ProductController : BaseApiController
 {
     private readonly IMediator _mediator;
 
-    public CategoryController(IMediator mediator)
+    public ProductController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -13,8 +13,8 @@ public class CategoryController : BaseApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
-        var categories = await _mediator.Send(new GetCategoryListQuery());
-        return Ok(categories);
+        var products = await _mediator.Send(new GetProductListQuery());
+        return Ok(products);
     }
 
     [HttpGet("{id:guid}")]
@@ -22,14 +22,14 @@ public class CategoryController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var category = await _mediator.Send(new GetCategoryByIdQuery(id));
-        return Ok(category);
+        var product = await _mediator.Send(new GetProductByIdQuery(id));
+        return Ok(product);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
     {
         var id = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
@@ -39,7 +39,7 @@ public class CategoryController : BaseApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCategoryCommand command)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
     {
         command.Id = id;
         await _mediator.Send(command);
@@ -52,7 +52,7 @@ public class CategoryController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _mediator.Send(new DeleteCategoryCommand(id));
+        await _mediator.Send(new DeleteProductCommand(id));
         return NoContent();
     }
 }

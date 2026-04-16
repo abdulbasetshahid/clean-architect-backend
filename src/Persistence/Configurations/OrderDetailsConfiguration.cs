@@ -8,10 +8,15 @@ public class OrderDetailsConfiguration : IEntityTypeConfiguration<OrderDetails>
 {
     public void Configure(EntityTypeBuilder<OrderDetails> builder)
     {
+        builder.ToTable("OrderDetails");
+
         builder.HasKey(e => e.Id);
 
+        builder.Property(e => e.UnitPrice).HasPrecision(18, 2);
+        builder.Property(e => e.LineTotal).HasPrecision(18, 2);
+
         builder.HasOne<Order>()
-            .WithMany()
+            .WithMany(o => o.OrderDetails)
             .HasForeignKey(e => e.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 

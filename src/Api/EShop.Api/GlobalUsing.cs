@@ -1,5 +1,14 @@
 ﻿global using EShop.Api.Controllers.Base;
 global using EShop.Application;
+global using EShop.Application.Features.Categories.Commands.CreateCategory;
+global using EShop.Application.Features.Categories.Commands.DeleteCategory;
+global using EShop.Application.Features.Categories.Commands.UpdateCategory;
 global using EShop.Application.Features.Categories.Queries.GetCategories;
+global using EShop.Application.Features.Categories.Queries.GetCategoryById;
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
+global using EShop.Application.Features.Products.Commands.CreateProduct;
+global using EShop.Application.Features.Products.Commands.DeleteProduct;
+global using EShop.Application.Features.Products.Commands.UpdateProduct;
+global using EShop.Application.Features.Products.Queries.GetProductById;
+global using EShop.Application.Features.Products.Queries.GetProducts;
