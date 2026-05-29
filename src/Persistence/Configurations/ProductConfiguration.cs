@@ -17,6 +17,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasForeignKey(e => e.CategoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(e => e.ProductDetails)
+            .WithOne(d => d.Product)
+            .HasForeignKey(d => d.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(e => e.Name).IsRequired().HasMaxLength(200);
         builder.Property(e => e.ShortDescription).HasMaxLength(500);
         builder.Property(e => e.Description).HasMaxLength(4000);

@@ -13,6 +13,7 @@ namespace EShop.Persistence
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductDetail> ProductDetails { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderType> OrderTypes { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }

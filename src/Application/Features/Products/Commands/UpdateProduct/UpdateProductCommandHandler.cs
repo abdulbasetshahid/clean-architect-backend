@@ -27,6 +27,11 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         _ = await _categoryRepository.GetByIdAsync(request.CategoryId)
             ?? throw new NotFoundException(nameof(Category), request.CategoryId);
 
+        var validator = new UpdateProductCommandValidator();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult);
+
         product.Name = request.Name.Trim();
         product.ShortDescription = NormalizeOptional(request.ShortDescription);
         product.Description = NormalizeOptional(request.Description);

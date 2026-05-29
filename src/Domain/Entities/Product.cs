@@ -18,4 +18,6 @@ public class Product : AuditableEntity, IEntity<Guid>
     public Guid CategoryId { get; set; }
 
     public Category Category { get; set; } = default!;
+
+    public ICollection<ProductDetail> ProductDetails { get; set; } = [];
 }
