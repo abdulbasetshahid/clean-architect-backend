@@ -1,4 +1,5 @@
 ﻿using EShop.Application;
+using EShop.Identity;
 using EShop.Infrastructure;
 using EShop.Persistence;
 
@@ -11,6 +12,7 @@ namespace EShop.Api
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddPersistenceServices(builder.Configuration);
+            builder.Services.AddIdentityServices(builder.Configuration);
 
             builder.Services.AddControllers();
             builder.Services.AddProblemDetails();
@@ -32,6 +34,8 @@ namespace EShop.Api
             app.UseExceptionHandler();
             app.UseCors("open");
             app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapControllers();
 
             return app;

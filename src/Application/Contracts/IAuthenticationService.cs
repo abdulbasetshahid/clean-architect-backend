@@ -1,7 +1,9 @@
-﻿namespace EShop.Application.Contracts;
+﻿using EShop.Application.Models.Authentication;
+
+namespace EShop.Application.Contracts;
 
 public interface IAuthenticationService
 {
-    //Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request);
-    //Task<RegistrationResponse> RegisterAsync(RegistrationRequest request);
+    Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request);
+    Task<RegistrationResponse> RegisterAsync(RegistrationRequest request);
 }
