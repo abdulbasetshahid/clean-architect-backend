@@ -3,12 +3,11 @@ using System.Security.Claims;
 using System.Text;
 using EShop.Application.Contracts;
 using EShop.Application.Models.Authentication;
-using EShop.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace EShop.Identity.Services;
+namespace EShop.Persistence;
 
 public class AuthenticationService : IAuthenticationService
 {
@@ -39,7 +38,7 @@ public class AuthenticationService : IAuthenticationService
 
         if (!result.Succeeded)
         {
-            throw new Exception($"Credentials for '{request.Email} aren't valid'.");
+            throw new Exception($"Credentials for '{request.Email}' aren't valid.");
         }
 
         var jwtSecurityToken = await GenerateToken(user);

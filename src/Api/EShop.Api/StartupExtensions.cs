@@ -1,5 +1,4 @@
 ﻿using EShop.Application;
-using EShop.Identity;
 using EShop.Infrastructure;
 using EShop.Persistence;
 

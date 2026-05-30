@@ -10,7 +10,6 @@
   <Folder Name="/src/Infrastructure/">
     <Project Path="src/Infrastructure/EShop.Infrastructure.csproj" Id="ee90756e-6c20-4efe-934f-b9461e9cff3a" />
     <Project Path="src/Persistence/EShop.Persistence.csproj" Id="da6b0841-8513-4f0a-ab22-e60aea66b2a2" />
-    <Project Path="src/Identity/EShop.Identity/EShop.Identity.csproj" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>

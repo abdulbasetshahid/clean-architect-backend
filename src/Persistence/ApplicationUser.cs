@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace EShop.Identity.Models;
+namespace EShop.Persistence;
 
 public class ApplicationUser : IdentityUser
 {

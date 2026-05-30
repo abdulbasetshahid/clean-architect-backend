@@ -2,17 +2,14 @@ using System.Text;
 using System.Text.Json;
 using EShop.Application.Contracts;
 using EShop.Application.Models.Authentication;
-using EShop.Identity.Models;
-using EShop.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace EShop.Identity;
+namespace EShop.Persistence;
 
 public static class IdentityServiceRegistration
 {
@@ -20,12 +17,8 @@ public static class IdentityServiceRegistration
     {
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
-        services.AddDbContext<EShopIdentityDbContext>(options => options.UseSqlServer(
-            configuration.GetConnectionString("IdentityConnection"),
-            b => b.MigrationsAssembly(typeof(EShopIdentityDbContext).Assembly.FullName)));
-
         services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<EShopIdentityDbContext>()
+            .AddEntityFrameworkStores<EShopDbContext>()
             .AddDefaultTokenProviders();
 
         services.AddTransient<IAuthenticationService, AuthenticationService>();

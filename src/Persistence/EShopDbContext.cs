@@ -1,10 +1,11 @@
 ﻿using EShop.Domain.Common;
 using EShop.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Persistence
 {
-    public class EShopDbContext : DbContext
+    public class EShopDbContext : IdentityDbContext<ApplicationUser>
     {
         public EShopDbContext(DbContextOptions<EShopDbContext> options) : base(options)
         {
@@ -20,8 +21,8 @@ namespace EShop.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(EShopDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(EShopDbContext).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
