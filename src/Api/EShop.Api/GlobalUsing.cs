@@ -6,6 +6,7 @@ global using EShop.Application.Features.Categories.Commands.UpdateCategory;
 global using EShop.Application.Features.Categories.Queries.GetCategories;
 global using EShop.Application.Features.Categories.Queries.GetCategoryById;
 global using MediatR;
+global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using EShop.Application.Features.Products.Commands.CreateProduct;
 global using EShop.Application.Features.Products.Commands.DeleteProduct;

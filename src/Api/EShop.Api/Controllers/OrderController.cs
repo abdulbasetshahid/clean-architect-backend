@@ -19,6 +19,7 @@ public class OrderController : BaseApiController
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetList([FromQuery] GetOrderListQuery query)
     {
@@ -27,6 +28,7 @@ public class OrderController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
