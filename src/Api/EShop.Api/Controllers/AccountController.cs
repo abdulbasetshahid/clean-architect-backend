@@ -21,6 +21,12 @@ public class AccountController : ControllerBase
         return Ok(await _authenticationService.AuthenticateAsync(request));
     }
 
+    [HttpPost("authenticate/google")]
+    public async Task<ActionResult<AuthenticationResponse>> GoogleAuthenticateAsync(GoogleAuthRequest request)
+    {
+        return Ok(await _authenticationService.GoogleAuthenticateAsync(request));
+    }
+
     [HttpPost("register")]
     public async Task<ActionResult<RegistrationResponse>> RegisterAsync(RegistrationRequest request)
     {

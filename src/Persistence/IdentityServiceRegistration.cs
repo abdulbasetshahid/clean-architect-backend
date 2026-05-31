@@ -16,6 +16,7 @@ public static class IdentityServiceRegistration
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.Configure<GoogleAuthSettings>(configuration.GetSection("GoogleAuthSettings"));
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<EShopDbContext>()
