@@ -28,18 +28,17 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
             Status = order.Status.ToString(),
             CustomerName = order.CustomerName,
             CustomerPhone = order.CustomerPhone,
+            ShippingAddress = order.ShippingAddress,
             SubTotal = order.SubTotal,
             TaxAmount = order.TaxAmount,
-            ShippingAmount = order.ShippingAmount,
+            ShippingAmount = order.DeliveryFee,
             DiscountAmount = order.DiscountAmount,
             TotalAmount = order.TotalAmount,
             IsPaid = order.IsPaid,
-            OrderTypeId = order.OrderTypeId,
-            OrderType = order.OrderType.Type,
             Lines = order.OrderDetails.Select(d => new OrderLineVm
             {
-                ProductId = d.ProductId,
-                ProductName = d.Product.Name,
+                ProductDetailId = d.ProductDetailId,
+                ProductName = d.ProductDetail.Product.Name,
                 Quantity = d.Quantity,
                 UnitPrice = d.UnitPrice,
                 LineTotal = d.LineTotal

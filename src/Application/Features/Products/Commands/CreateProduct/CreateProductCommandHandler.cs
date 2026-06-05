@@ -28,12 +28,20 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             Id = Guid.NewGuid(),
             Name = request.Name.Trim(),
             ShortDescription = NormalizeOptional(request.ShortDescription),
-            Description = NormalizeOptional(request.Description),
-            Price = request.Price,
-            InStock = request.InStock,
             IsBestSeller = request.IsBestSeller,
             ImageUrl = NormalizeOptional(request.ImageUrl),
-            CategoryId = request.CategoryId
+            CategoryId = request.CategoryId,
+            ProductDetails =
+            [
+                new ProductDetail
+                {
+                    Id = Guid.NewGuid(),
+                    VariationName = request.Name.Trim(),
+                    Description = NormalizeOptional(request.Description),
+                    Price = request.Price,
+                    InStock = request.InStock
+                }
+            ]
         };
 
         await _productRepository.AddAsync(product);

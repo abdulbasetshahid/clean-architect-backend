@@ -17,16 +17,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(e => e.OrderNumber).IsRequired().HasMaxLength(50);
         builder.Property(e => e.CustomerName).IsRequired().HasMaxLength(200);
         builder.Property(e => e.CustomerPhone).IsRequired().HasMaxLength(50);
+        builder.Property(e => e.ShippingAddress).IsRequired().HasMaxLength(500);
         builder.Property(e => e.SubTotal).HasPrecision(18, 2);
         builder.Property(e => e.TaxAmount).HasPrecision(18, 2);
-        builder.Property(e => e.ShippingAmount).HasPrecision(18, 2);
+        builder.Property(e => e.DeliveryFee).HasPrecision(18, 2);
         builder.Property(e => e.DiscountAmount).HasPrecision(18, 2);
         builder.Property(e => e.TotalAmount).HasPrecision(18, 2);
-
-        builder.HasOne(e => e.OrderType)
-            .WithMany()
-            .HasForeignKey(e => e.OrderTypeId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
     }
 }

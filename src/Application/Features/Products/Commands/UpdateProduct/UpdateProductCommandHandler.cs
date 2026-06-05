@@ -20,7 +20,10 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 
     public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.GetByIdAsync(request.Id);
+        var product = await _productRepository.GetByIdWithDetailsAsync(
+            request.Id,
+            asNoTracking: false,
+            cancellationToken);
         if (product is null)
             throw new NotFoundException(nameof(Product), request.Id);
 
@@ -34,12 +37,26 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 
         product.Name = request.Name.Trim();
         product.ShortDescription = NormalizeOptional(request.ShortDescription);
-        product.Description = NormalizeOptional(request.Description);
-        product.Price = request.Price;
-        product.InStock = request.InStock;
         product.IsBestSeller = request.IsBestSeller;
         product.ImageUrl = NormalizeOptional(request.ImageUrl);
         product.CategoryId = request.CategoryId;
+
+        var detail = product.ProductDetails.FirstOrDefault();
+        if (detail is null)
+        {
+            detail = new ProductDetail
+            {
+                Id = Guid.NewGuid(),
+                ProductId = product.Id,
+                VariationName = product.Name
+            };
+            product.ProductDetails.Add(detail);
+        }
+
+        detail.VariationName = product.Name;
+        detail.Description = NormalizeOptional(request.Description);
+        detail.Price = request.Price;
+        detail.InStock = request.InStock;
 
         await _productRepository.UpdateAsync(product);
         return Unit.Value;

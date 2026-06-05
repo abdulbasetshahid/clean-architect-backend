@@ -24,8 +24,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(e => e.Name).IsRequired().HasMaxLength(200);
         builder.Property(e => e.ShortDescription).HasMaxLength(500);
-        builder.Property(e => e.Description).HasMaxLength(4000);
         builder.Property(e => e.ImageUrl).HasMaxLength(200);
-        builder.Property(e => e.Price).HasPrecision(18, 2);
     }
 }

@@ -8,16 +8,13 @@ namespace EShop.Application.Features.Orders.Commands.UpdateOrder;
 public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Unit>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IOrderTypeRepository _orderTypeRepository;
     private readonly IProductRepository _productRepository;
 
     public UpdateOrderCommandHandler(
         IOrderRepository orderRepository,
-        IOrderTypeRepository orderTypeRepository,
         IProductRepository productRepository)
     {
         _orderRepository = orderRepository;
-        _orderTypeRepository = orderTypeRepository;
         _productRepository = productRepository;
     }
 
@@ -27,14 +24,11 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
         if (order is null)
             throw new NotFoundException(nameof(Order), request.Id);
 
-        _ = await _orderTypeRepository.GetByIdAsync(request.OrderTypeId)
-            ?? throw new NotFoundException(nameof(OrderType), request.OrderTypeId);
-
         order.CustomerName = request.CustomerName.Trim();
         order.CustomerPhone = request.CustomerPhone.Trim();
-        order.OrderTypeId = request.OrderTypeId;
+        order.ShippingAddress = request.ShippingAddress.Trim();
         order.TaxAmount = request.TaxAmount;
-        order.ShippingAmount = request.ShippingAmount;
+        order.DeliveryFee = request.ShippingAmount;
         order.DiscountAmount = request.DiscountAmount;
         order.IsPaid = request.IsPaid;
         order.UserId = request.UserId;
@@ -46,14 +40,16 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
             decimal subTotal = 0;
             foreach (var line in request.Lines)
             {
-                var product = await _productRepository.GetByIdAsync(line.ProductId);
-                if (product is null)
-                    throw new NotFoundException(nameof(Product), line.ProductId);
+                var detail = await _productRepository.GetDetailByIdWithProductAsync(line.ProductDetailId, cancellationToken);
+                if (detail is null)
+                    throw new NotFoundException(nameof(ProductDetail), line.ProductDetailId);
 
-                if (!product.InStock)
-                    throw new BadRequestException($"Product '{product.Name}' is not in stock.");
+                var productName = detail.Product.Name;
 
-                var unitPrice = product.Price;
+                if (!detail.InStock)
+                    throw new BadRequestException($"Product '{productName}' is not in stock.");
+
+                var unitPrice = detail.Price;
                 var lineTotal = unitPrice * line.Quantity;
                 subTotal += lineTotal;
 
@@ -61,7 +57,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
                 {
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
-                    ProductId = product.Id,
+                    ProductDetailId = detail.Id,
                     Quantity = line.Quantity,
                     UnitPrice = unitPrice,
                     LineTotal = lineTotal
@@ -71,7 +67,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
             order.SubTotal = subTotal;
         }
 
-        order.TotalAmount = order.SubTotal + order.TaxAmount + order.ShippingAmount - order.DiscountAmount;
+        order.TotalAmount = order.SubTotal + order.TaxAmount + order.DeliveryFee - order.DiscountAmount;
         if (order.TotalAmount < 0)
             order.TotalAmount = 0;
 

@@ -15,8 +15,9 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .NotEmpty()
             .MaximumLength(OrderConstraints.CustomerPhoneMaxLength);
 
-        RuleFor(x => x.OrderTypeId)
-            .GreaterThan(0);
+        RuleFor(x => x.ShippingAddress)
+            .NotEmpty()
+            .MaximumLength(OrderConstraints.ShippingAddressMaxLength);
 
         RuleFor(x => x.TaxAmount)
             .GreaterThanOrEqualTo(0);
@@ -33,7 +34,7 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 
         RuleForEach(x => x.Lines).ChildRules(line =>
         {
-            line.RuleFor(l => l.ProductId).NotEmpty();
+            line.RuleFor(l => l.ProductDetailId).NotEmpty();
             line.RuleFor(l => l.Quantity).GreaterThan(0);
         });
     }

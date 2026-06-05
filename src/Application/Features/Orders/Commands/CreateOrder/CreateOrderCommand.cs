@@ -10,7 +10,7 @@ public class CreateOrderCommand : IRequest<Guid>
 
     public required string CustomerPhone { get; set; }
 
-    public int OrderTypeId { get; set; }
+    public required string ShippingAddress { get; set; }
 
     public decimal TaxAmount { get; set; }
 
@@ -23,7 +23,7 @@ public class CreateOrderCommand : IRequest<Guid>
 
 public sealed class CreateOrderLineItem
 {
-    public Guid ProductId { get; set; }
+    public Guid ProductDetailId { get; set; }
 
     public int Quantity { get; set; }
 }

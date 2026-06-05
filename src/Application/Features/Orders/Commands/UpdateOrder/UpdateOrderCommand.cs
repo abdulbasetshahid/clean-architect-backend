@@ -11,7 +11,7 @@ public class UpdateOrderCommand : IRequest<Unit>
 
     public required string CustomerPhone { get; set; }
 
-    public int OrderTypeId { get; set; }
+    public required string ShippingAddress { get; set; }
 
     public decimal TaxAmount { get; set; }
 

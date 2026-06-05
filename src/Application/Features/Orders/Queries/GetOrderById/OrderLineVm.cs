@@ -2,7 +2,7 @@ namespace EShop.Application.Features.Orders.Queries.GetOrderById;
 
 public class OrderLineVm
 {
-    public Guid ProductId { get; set; }
+    public Guid ProductDetailId { get; set; }
 
     public required string ProductName { get; set; }
 

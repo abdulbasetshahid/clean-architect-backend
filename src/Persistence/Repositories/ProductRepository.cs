@@ -11,11 +11,35 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
+    public async Task<Product?> GetByIdWithDetailsAsync(
+        Guid id,
+        bool asNoTracking = true,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Products
+            .Include(p => p.ProductDetails)
+            .Where(p => p.Id == id);
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<ProductDetail?> GetDetailByIdWithProductAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.ProductDetails
+            .AsNoTracking()
+            .Include(d => d.Product)
+            .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
+    }
+
     public async Task<Product?> GetByIdWithCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Products
             .AsNoTracking()
             .Include(p => p.Category)
+            .Include(p => p.ProductDetails)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
@@ -24,6 +48,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         return await _dbContext.Products
             .AsNoTracking()
             .Include(p => p.Category)
+            .Include(p => p.ProductDetails)
             .OrderBy(p => p.Name)
             .ToListAsync(cancellationToken);
     }

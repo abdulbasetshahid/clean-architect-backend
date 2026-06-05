@@ -13,9 +13,24 @@ public class MappingProfiles : Profile
         CreateMap<Category, CategoryListVm>().ReverseMap();
 
         CreateMap<Product, ProductListVm>()
-            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name));
+            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name))
+            .ForMember(d => d.Price, o => o.MapFrom(s => s.ProductDetails
+                .Select(d => (decimal?)d.Price)
+                .FirstOrDefault() ?? 0m))
+            .ForMember(d => d.InStock, o => o.MapFrom(s => s.ProductDetails
+                .Select(d => (bool?)d.InStock)
+                .FirstOrDefault() ?? false));
 
         CreateMap<Product, ProductDetailVm>()
-            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name));
+            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name))
+            .ForMember(d => d.Description, o => o.MapFrom(s => s.ProductDetails
+                .Select(d => d.Description)
+                .FirstOrDefault()))
+            .ForMember(d => d.Price, o => o.MapFrom(s => s.ProductDetails
+                .Select(d => (decimal?)d.Price)
+                .FirstOrDefault() ?? 0m))
+            .ForMember(d => d.InStock, o => o.MapFrom(s => s.ProductDetails
+                .Select(d => (bool?)d.InStock)
+                .FirstOrDefault() ?? false));
     }
 }

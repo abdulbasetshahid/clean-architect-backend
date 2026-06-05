@@ -14,6 +14,8 @@ public class OrderDetailVm
 
     public required string CustomerPhone { get; set; }
 
+    public required string ShippingAddress { get; set; }
+
     public decimal SubTotal { get; set; }
 
     public decimal TaxAmount { get; set; }
@@ -25,10 +27,6 @@ public class OrderDetailVm
     public decimal TotalAmount { get; set; }
 
     public bool IsPaid { get; set; }
-
-    public int OrderTypeId { get; set; }
-
-    public required string OrderType { get; set; }
 
     public IReadOnlyList<OrderLineVm> Lines { get; set; } = Array.Empty<OrderLineVm>();
 }

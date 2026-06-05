@@ -15,8 +15,8 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
         var query = _dbContext.Set<Order>()
             .Include(o => o.OrderDetails)
-                .ThenInclude(d => d.Product)
-            .Include(o => o.OrderType)
+                .ThenInclude(d => d.ProductDetail)
+                    .ThenInclude(d => d.Product)
             .Where(o => o.Id == id);
 
         if (asNoTracking)
