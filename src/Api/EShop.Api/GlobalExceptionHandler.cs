@@ -1,24 +1,41 @@
 using EShop.Application.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 
 namespace EShop.Api;
 
-public sealed class GlobalExceptionHandler(IHostEnvironment environment, ILogger<GlobalExceptionHandler> logger)
-    : IExceptionHandler
+public sealed class GlobalExceptionHandler(
+    RequestDelegate next,
+    IHostEnvironment environment,
+    ILogger<GlobalExceptionHandler> logger)
 {
-    public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
-        Exception exception,
-        CancellationToken cancellationToken)
+    public async Task InvokeAsync(HttpContext httpContext)
     {
-        logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+        try
+        {
+            await next(httpContext);
+        }
+        catch (Exception exception)
+        {
+            await HandleExceptionAsync(httpContext, exception);
+        }
+    }
+
+    private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
+    {
+        logger.LogError(exception, "Exception handled by global middleware: {Message}", exception.Message);
+
+        if (httpContext.Response.HasStarted)
+        {
+            logger.LogWarning(
+                "The response has already started, so the global exception middleware cannot write a problem response.");
+            return;
+        }
 
         var problemDetails = CreateProblemDetails(httpContext, exception);
-        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
-        return true;
+        httpContext.Response.Clear();
+        httpContext.Response.ContentType = "application/problem+json";
+        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
+        await httpContext.Response.WriteAsJsonAsync(problemDetails);
     }
 
     private ProblemDetails CreateProblemDetails(HttpContext httpContext, Exception exception)
@@ -46,6 +63,13 @@ public sealed class GlobalExceptionHandler(IHostEnvironment environment, ILogger
                 Detail = string.Join("; ", validation.ValidationErrors),
                 Instance = httpContext.Request.Path,
                 Extensions = { ["errors"] = validation.ValidationErrors }
+            },
+            UnauthorizedException unauthorized => new ProblemDetails
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Unauthorized",
+                Detail = unauthorized.Message,
+                Instance = httpContext.Request.Path
             },
             _ => new ProblemDetails
             {

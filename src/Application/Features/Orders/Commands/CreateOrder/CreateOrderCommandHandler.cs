@@ -1,3 +1,4 @@
+using EShop.Application.Contracts;
 using EShop.Application.Contracts.Persistence;
 using EShop.Application.Exceptions;
 using EShop.Domain.Entities;
@@ -10,19 +11,22 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
+    private readonly ICurrentUserService _currentUserService;
 
     public CreateOrderCommandHandler(
         IOrderRepository orderRepository,
-        IProductRepository productRepository)
+        IProductRepository productRepository,
+        ICurrentUserService currentUserService)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var orderId = Guid.NewGuid();
-        var orderNumber = await GenerateUniqueOrderNumberAsync(cancellationToken);
+        var orderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}";
 
         var details = new List<OrderDetails>();
         decimal subTotal = 0;
@@ -60,7 +64,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
         var order = new Order
         {
             Id = orderId,
-            UserId = request.UserId,
+            UserId = _currentUserService.GetCurrentUserGuid(),
             CustomerName = request.CustomerName.Trim(),
             CustomerPhone = request.CustomerPhone.Trim(),
             OrderNumber = orderNumber,
@@ -74,24 +78,10 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             TotalAmount = totalAmount,
             IsPaid = false,
             OrderDetails = details,
-            CreatedBy = "api",
-            LastModifiedBy = "api"
+            DeliveryDate = null,         
         };
 
         await _orderRepository.AddAsync(order);
         return order.Id;
-    }
-
-    private async Task<string> GenerateUniqueOrderNumberAsync(CancellationToken cancellationToken)
-    {
-        for (var attempt = 0; attempt < 5; attempt++)
-        {
-            var candidate = $"ORD-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid():N}";
-
-            if (!await _orderRepository.OrderNumberExistsAsync(candidate, cancellationToken))
-                return candidate;
-        }
-
-        return $"ORD-{Guid.NewGuid():N}";
     }
 }

@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using EShop.Application.Contracts;
+using EShop.Application.Exceptions;
 using EShop.Application.Models.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -31,14 +32,14 @@ public class AuthenticationService : IAuthenticationService
 
         if (user == null)
         {
-            throw new Exception($"User with {request.Email} not found");
+            throw new UnauthorizedException("Invalid email or password.");
         }
 
         var result = await _signInManager.PasswordSignInAsync(user, request.Password, false, lockoutOnFailure: false);
 
         if (!result.Succeeded)
         {
-            throw new Exception($"Credentials for '{request.Email}' aren't valid.");
+            throw new UnauthorizedException("Invalid email or password.");
         }
 
         var jwtSecurityToken = await GenerateToken(user);
@@ -58,7 +59,7 @@ public class AuthenticationService : IAuthenticationService
 
         if (existingUser != null)
         {
-            throw new Exception($"Username '{request.UserName}' already exists.");
+            throw new BadRequestException($"Username '{request.UserName}' already exists.");
         }
 
         var user = new ApplicationUser
@@ -81,10 +82,10 @@ public class AuthenticationService : IAuthenticationService
                 return new RegistrationResponse { UserId = user.Id };
             }
 
-            throw new Exception($"{result.Errors}");
+            throw new BadRequestException(string.Join("; ", result.Errors.Select(e => e.Description)));
         }
 
-        throw new Exception($"Email {request.Email} already exists.");
+        throw new BadRequestException($"Email {request.Email} already exists.");
     }
 
     private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)

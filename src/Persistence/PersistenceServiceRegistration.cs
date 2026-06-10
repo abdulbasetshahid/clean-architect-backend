@@ -1,4 +1,5 @@
 ﻿using EShop.Application.Contracts.Persistence;
+using EShop.Application.Contracts;
 using EShop.Persistence.Repositories;
 using EShop.Persistence.Repositories.Common;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +18,7 @@ namespace EShop.Persistence
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 

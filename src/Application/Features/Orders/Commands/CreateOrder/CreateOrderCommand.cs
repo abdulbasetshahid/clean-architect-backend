@@ -4,7 +4,6 @@ namespace EShop.Application.Features.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommand : IRequest<Guid>
 {
-    public Guid? UserId { get; set; }
 
     public required string CustomerName { get; set; }
 

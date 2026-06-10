@@ -1,6 +1,6 @@
-﻿using EShop.Domain.Common;
+﻿using EShop.Application.Contracts;
+using EShop.Domain.Common;
 using EShop.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +8,7 @@ namespace EShop.Persistence
 {
     public class EShopDbContext : IdentityDbContext<ApplicationUser>
     {
-        private readonly IHttpContextAccessor? _httpContextAccessor;
+        private readonly ICurrentUserService? _currentUserService;
 
         public EShopDbContext(DbContextOptions<EShopDbContext> options) : base(options)
         {
@@ -16,9 +16,9 @@ namespace EShop.Persistence
 
         public EShopDbContext(
             DbContextOptions<EShopDbContext> options,
-            IHttpContextAccessor httpContextAccessor) : base(options)
+            ICurrentUserService currentUserService) : base(options)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _currentUserService = currentUserService;
         }
 
         public DbSet<Category> Categories { get; set; }
@@ -36,8 +36,7 @@ namespace EShop.Persistence
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var userId = _httpContextAccessor?.HttpContext?.User
-                .FindFirst("uid")?.Value ?? "system";
+            string userId = _currentUserService?.GetCurrentUserId() ?? "system";
 
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {

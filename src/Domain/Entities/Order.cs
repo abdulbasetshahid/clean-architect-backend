@@ -3,7 +3,7 @@ using EShop.Domain.Enums;
 
 namespace EShop.Domain.Entities;
 
-public class Order : AuditableEntity, IEntity<Guid>
+public class Order : IEntity<Guid>
 {
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
@@ -17,6 +17,7 @@ public class Order : AuditableEntity, IEntity<Guid>
     public required string ShippingAddress {get; set; }
 
     public DateTime OrderDate { get; set; }
+    public DateTime? DeliveryDate { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
     public decimal SubTotal { get; set; }
