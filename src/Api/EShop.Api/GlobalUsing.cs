@@ -13,3 +13,4 @@ global using EShop.Application.Features.Products.Commands.DeleteProduct;
 global using EShop.Application.Features.Products.Commands.UpdateProduct;
 global using EShop.Application.Features.Products.Queries.GetProductById;
 global using EShop.Application.Features.Products.Queries.GetProducts;
+global using EShop.Application.Exceptions;

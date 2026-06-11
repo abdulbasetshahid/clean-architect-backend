@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EShop.Persistence.Migrations
 {
     [DbContext(typeof(EShopDbContext))]
-    [Migration("20260605123605_RemoveOrderTypeFromOrder")]
-    partial class RemoveOrderTypeFromOrder
+    [Migration("20260610162126_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,6 @@ namespace EShop.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModifiedDate")
@@ -61,13 +60,6 @@ namespace EShop.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -77,6 +69,9 @@ namespace EShop.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("DeliveryFee")
                         .HasPrecision(18, 2)
@@ -88,13 +83,6 @@ namespace EShop.Persistence.Migrations
 
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -213,7 +201,6 @@ namespace EShop.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LastModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModifiedDate")
@@ -256,7 +243,6 @@ namespace EShop.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LastModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModifiedDate")

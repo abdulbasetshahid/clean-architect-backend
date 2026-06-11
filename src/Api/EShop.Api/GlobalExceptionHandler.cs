@@ -1,5 +1,3 @@
-using EShop.Application.Exceptions;
-
 namespace EShop.Api;
 
 public sealed class GlobalExceptionHandler(

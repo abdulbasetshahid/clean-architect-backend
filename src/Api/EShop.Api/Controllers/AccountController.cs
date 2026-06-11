@@ -15,7 +15,7 @@ public class AccountController : ControllerBase
         _authenticationService = authenticationService;
     }
 
-    [HttpPost("authenticate")]
+    [HttpPost("login")]
     public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
     {
         return Ok(await _authenticationService.AuthenticateAsync(request));

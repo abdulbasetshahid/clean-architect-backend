@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.Json;
 using EShop.Application.Contracts;
 using EShop.Application.Models.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,32 +39,49 @@ public static class IdentityServiceRegistration
                 ClockSkew = TimeSpan.Zero,
                 ValidIssuer = configuration["JwtSettings:Issuer"],
                 ValidAudience = configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!)),
+                NameClaimType = "uid",
+                RoleClaimType = "roles"
             };
 
             o.Events = new JwtBearerEvents
             {
-                OnAuthenticationFailed = c =>
+                OnAuthenticationFailed = context =>
                 {
-                    c.NoResult();
-                    c.Response.StatusCode = 500;
-                    c.Response.ContentType = "text/plain";
-                    return c.Response.WriteAsync(c.Exception.ToString());
+                    context.NoResult();
+                    return Task.CompletedTask;
                 },
                 OnChallenge = context =>
                 {
                     context.HandleResponse();
-                    context.Response.StatusCode = 401;
-                    context.Response.ContentType = "application/json";
-                    var result = JsonSerializer.Serialize("401 Not authorized");
-                    return context.Response.WriteAsync(result);
+
+                    if (context.Response.HasStarted)
+                        return Task.CompletedTask;
+
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Response.ContentType = "application/problem+json";
+
+                    return context.Response.WriteAsJsonAsync(new
+                    {
+                        status = StatusCodes.Status401Unauthorized,
+                        title = "Unauthorized",
+                        detail = "Authentication is required or token is invalid."
+                    });
                 },
                 OnForbidden = context =>
                 {
-                    context.Response.StatusCode = 403;
-                    context.Response.ContentType = "application/json";
-                    var result = JsonSerializer.Serialize("403 Not authorized");
-                    return context.Response.WriteAsync(result);
+                    if (context.Response.HasStarted)
+                        return Task.CompletedTask;
+
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    context.Response.ContentType = "application/problem+json";
+
+                    return context.Response.WriteAsJsonAsync(new
+                    {
+                        status = StatusCodes.Status403Forbidden,
+                        title = "Forbidden",
+                        detail = "You are not allowed to access this resource."
+                    });
                 }
             };
         });

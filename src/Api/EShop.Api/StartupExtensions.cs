@@ -14,6 +14,10 @@ namespace EShop.Api
             builder.Services.AddIdentityServices(builder.Configuration);
 
             builder.Services.AddControllers();
+            builder.Services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+            });
 
             builder.Services.AddCors(options => options.AddPolicy("open", policy => policy.WithOrigins([
                 builder.Configuration["ApiUrl"] ?? "https://localhost:5001",
@@ -29,6 +33,15 @@ namespace EShop.Api
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
             app.UseMiddleware<GlobalExceptionHandler>();
+            app.MapOpenApi();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "EShop API");
+            });
+            app.UseReDoc(options =>
+            {
+                options.SpecUrl("/openapi/v1.json");
+            });
             app.UseCors("open");
             app.UseHttpsRedirection();
             app.UseAuthentication();

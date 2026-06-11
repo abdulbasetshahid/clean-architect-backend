@@ -46,10 +46,9 @@ public class AuthenticationService : IAuthenticationService
 
         return new AuthenticationResponse
         {
-            Id = user.Id,
+            FullName = $"{user.FirstName} {user.LastName}",
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            Email = user.Email ?? string.Empty,
-            UserName = user.UserName ?? string.Empty
+            Email = user.Email ?? string.Empty
         };
     }
 
