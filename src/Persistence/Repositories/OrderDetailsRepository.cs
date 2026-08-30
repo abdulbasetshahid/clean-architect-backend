@@ -4,7 +4,7 @@ using EShop.Persistence.Repositories.Common;
 
 namespace EShop.Persistence.Repositories;
 
-public class OrderDetailsRepository : BaseRepository<OrderDetails>, IOrderDetailsRepository
+public class OrderDetailsRepository : BaseRepository<OrderItem>, IOrderDetailsRepository
 {
     public OrderDetailsRepository(EShopDbContext dbContext) : base(dbContext)
     {

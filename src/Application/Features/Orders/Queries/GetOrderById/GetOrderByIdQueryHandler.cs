@@ -31,17 +31,17 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
             ShippingAddress = order.ShippingAddress,
             SubTotal = order.SubTotal,
             TaxAmount = order.TaxAmount,
-            ShippingAmount = order.DeliveryFee,
+            ShippingAmount = order.DeliveryCost,
             DiscountAmount = order.DiscountAmount,
             TotalAmount = order.TotalAmount,
             IsPaid = order.IsPaid,
             Lines = order.OrderDetails.Select(d => new OrderLineVm
             {
-                ProductDetailId = d.ProductDetailId,
-                ProductName = d.ProductDetail.Product.Name,
+                ProductDetailId = d.ProductVariantId,
+                ProductName = d.ProductVariant.Product.Name,
                 Quantity = d.Quantity,
                 UnitPrice = d.UnitPrice,
-                LineTotal = d.LineTotal
+                LineTotal = d.TotalPrice
             }).ToList()
         };
     }

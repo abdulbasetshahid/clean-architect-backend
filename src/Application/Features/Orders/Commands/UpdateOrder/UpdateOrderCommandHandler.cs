@@ -28,7 +28,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
         order.CustomerPhone = request.CustomerPhone.Trim();
         order.ShippingAddress = request.ShippingAddress.Trim();
         order.TaxAmount = request.TaxAmount;
-        order.DeliveryFee = request.ShippingAmount;
+        order.DeliveryCost = request.ShippingAmount;
         order.DiscountAmount = request.DiscountAmount;
         order.IsPaid = request.IsPaid;
         order.UserId = request.UserId;
@@ -42,7 +42,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
             {
                 var detail = await _productRepository.GetDetailByIdWithProductAsync(line.ProductDetailId, cancellationToken);
                 if (detail is null)
-                    throw new NotFoundException(nameof(ProductDetail), line.ProductDetailId);
+                    throw new NotFoundException(nameof(ProductVariant), line.ProductDetailId);
 
                 var productName = detail.Product.Name;
 
@@ -53,21 +53,21 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
                 var lineTotal = unitPrice * line.Quantity;
                 subTotal += lineTotal;
 
-                order.OrderDetails.Add(new OrderDetails
+                order.OrderDetails.Add(new OrderItem
                 {
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
-                    ProductDetailId = detail.Id,
+                    ProductVariantId = detail.Id,
                     Quantity = line.Quantity,
                     UnitPrice = unitPrice,
-                    LineTotal = lineTotal
+                    TotalPrice = lineTotal
                 });
             }
 
             order.SubTotal = subTotal;
         }
 
-        order.TotalAmount = order.SubTotal + order.TaxAmount + order.DeliveryFee - order.DiscountAmount;
+        order.TotalAmount = order.SubTotal + order.TaxAmount + order.DeliveryCost - order.DiscountAmount;
         if (order.TotalAmount < 0)
             order.TotalAmount = 0;
 

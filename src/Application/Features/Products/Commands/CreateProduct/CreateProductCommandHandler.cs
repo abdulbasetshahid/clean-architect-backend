@@ -31,9 +31,9 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             IsBestSeller = request.IsBestSeller,
             ImageUrl = NormalizeOptional(request.ImageUrl),
             CategoryId = request.CategoryId,
-            ProductDetails =
+            ProductVariants =
             [
-                new ProductDetail
+                new ProductVariant
                 {
                     Id = Guid.NewGuid(),
                     VariationName = request.Name.Trim(),

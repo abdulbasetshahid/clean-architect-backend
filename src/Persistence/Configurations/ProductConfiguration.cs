@@ -17,7 +17,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasForeignKey(e => e.CategoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(e => e.ProductDetails)
+        builder.HasMany(e => e.ProductVariants)
             .WithOne(d => d.Product)
             .HasForeignKey(d => d.ProductId)
             .OnDelete(DeleteBehavior.Cascade);

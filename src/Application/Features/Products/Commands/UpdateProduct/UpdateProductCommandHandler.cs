@@ -41,16 +41,16 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         product.ImageUrl = NormalizeOptional(request.ImageUrl);
         product.CategoryId = request.CategoryId;
 
-        var detail = product.ProductDetails.FirstOrDefault();
+        var detail = product.ProductVariants.FirstOrDefault();
         if (detail is null)
         {
-            detail = new ProductDetail
+            detail = new ProductVariant
             {
                 Id = Guid.NewGuid(),
                 ProductId = product.Id,
                 VariationName = product.Name
             };
-            product.ProductDetails.Add(detail);
+            product.ProductVariants.Add(detail);
         }
 
         detail.VariationName = product.Name;

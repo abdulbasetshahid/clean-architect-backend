@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EShop.Persistence.Configurations;
 
-public class ProductDetailConfiguration : IEntityTypeConfiguration<ProductDetail>
+public class ProductDetailConfiguration : IEntityTypeConfiguration<ProductVariant>
 {
-    public void Configure(EntityTypeBuilder<ProductDetail> builder)
+    public void Configure(EntityTypeBuilder<ProductVariant> builder)
     {
         builder.ToTable("ProductDetails");
 

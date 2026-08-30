@@ -4,7 +4,7 @@ using EShop.Persistence.Repositories.Common;
 
 namespace EShop.Persistence.Repositories;
 
-public class OrderTypeRepository : BaseRepository<OrderType>, IOrderTypeRepository
+public class OrderTypeRepository : BaseRepository<PaymentProvider>, IOrderTypeRepository
 {
     public OrderTypeRepository(EShopDbContext dbContext) : base(dbContext)
     {

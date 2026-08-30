@@ -23,10 +23,14 @@ public class Order : IEntity<Guid>
     public decimal SubTotal { get; set; }
     public decimal TaxAmount { get; set; }
     public decimal DiscountAmount { get; set; }
-    public decimal DeliveryFee { get; set; }
+    public decimal DeliveryCost { get; set; }
     public decimal TotalAmount { get; set; }
+
+    public DateTime? ShippedAt { get; set; }
+    public DateTime? DeliveredAt { get; set; }
+    public DateTime? CancelledAt { get; set; }
 
     public bool IsPaid { get; set; }
 
-    public ICollection<OrderDetails> OrderDetails { get; set; } = default!;
+    public ICollection<OrderItem> OrderDetails { get; set; } = default!;
 }

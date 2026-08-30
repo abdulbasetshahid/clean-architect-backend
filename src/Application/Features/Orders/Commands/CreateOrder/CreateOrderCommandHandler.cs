@@ -28,14 +28,14 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
         var orderId = Guid.NewGuid();
         var orderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}";
 
-        var details = new List<OrderDetails>();
+        var details = new List<OrderItem>();
         decimal subTotal = 0;
 
         foreach (var line in request.Lines)
         {
             var detail = await _productRepository.GetDetailByIdWithProductAsync(line.ProductDetailId, cancellationToken);
             if (detail is null)
-                throw new NotFoundException(nameof(ProductDetail), line.ProductDetailId);
+                throw new NotFoundException(nameof(ProductVariant), line.ProductDetailId);
 
             var productName = detail.Product.Name;
 
@@ -46,14 +46,14 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             var lineTotal = unitPrice * line.Quantity;
             subTotal += lineTotal;
 
-            details.Add(new OrderDetails
+            details.Add(new OrderItem
             {
                 Id = Guid.NewGuid(),
                 OrderId = orderId,
-                ProductDetailId = detail.Id,
+                ProductVariantId = detail.Id,
                 Quantity = line.Quantity,
                 UnitPrice = unitPrice,
-                LineTotal = lineTotal
+                TotalPrice = lineTotal
             });
         }
 
@@ -73,7 +73,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             Status = OrderStatus.Pending,
             SubTotal = subTotal,
             TaxAmount = request.TaxAmount,
-            DeliveryFee = request.ShippingAmount,
+            DeliveryCost = request.ShippingAmount,
             DiscountAmount = request.DiscountAmount,
             TotalAmount = totalAmount,
             IsPaid = false,

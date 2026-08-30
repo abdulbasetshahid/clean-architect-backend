@@ -20,7 +20,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(e => e.ShippingAddress).IsRequired().HasMaxLength(500);
         builder.Property(e => e.SubTotal).HasPrecision(18, 2);
         builder.Property(e => e.TaxAmount).HasPrecision(18, 2);
-        builder.Property(e => e.DeliveryFee).HasPrecision(18, 2);
+        builder.Property(e => e.DeliveryCost).HasPrecision(18, 2);
         builder.Property(e => e.DiscountAmount).HasPrecision(18, 2);
         builder.Property(e => e.TotalAmount).HasPrecision(18, 2);
     }

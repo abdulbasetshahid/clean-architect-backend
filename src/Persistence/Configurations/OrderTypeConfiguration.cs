@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EShop.Persistence.Configurations;
 
-public class OrderTypeConfiguration : IEntityTypeConfiguration<OrderType>
+public class OrderTypeConfiguration : IEntityTypeConfiguration<PaymentProvider>
 {
-    public void Configure(EntityTypeBuilder<OrderType> builder)
+    public void Configure(EntityTypeBuilder<PaymentProvider> builder)
     {
         builder.ToTable("OrderTypes");
 
@@ -14,8 +14,8 @@ public class OrderTypeConfiguration : IEntityTypeConfiguration<OrderType>
 
         builder.Property(e => e.Id).ValueGeneratedNever();
 
-        builder.Property(e => e.Type).IsRequired().HasMaxLength(50);
+        builder.Property(e => e.ProviderName).IsRequired().HasMaxLength(50);
 
-        builder.HasData(new OrderType { Id = 1, Type = "Standard" });
+        builder.HasData(new PaymentProvider { Id = 1, ProviderName = "Standard" });
     }
 }

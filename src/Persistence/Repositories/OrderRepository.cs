@@ -15,7 +15,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
         var query = _dbContext.Set<Order>()
             .Include(o => o.OrderDetails)
-                .ThenInclude(d => d.ProductDetail)
+                .ThenInclude(d => d.ProductVariant)
                     .ThenInclude(d => d.Product)
             .Where(o => o.Id == id);
 
@@ -56,7 +56,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
 
     public void ClearOrderDetails(Order trackedOrder)
     {
-        var set = _dbContext.Set<OrderDetails>();
+        var set = _dbContext.Set<OrderItem>();
         foreach (var detail in trackedOrder.OrderDetails.ToList())
             set.Remove(detail);
 
