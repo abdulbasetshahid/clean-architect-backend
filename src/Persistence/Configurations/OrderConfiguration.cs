@@ -23,5 +23,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(e => e.DeliveryCost).HasPrecision(18, 2);
         builder.Property(e => e.DiscountAmount).HasPrecision(18, 2);
         builder.Property(e => e.TotalAmount).HasPrecision(18, 2);
+
+        builder.HasIndex(e => e.UserId);
+        builder.HasIndex(e => e.Status);
     }
 }

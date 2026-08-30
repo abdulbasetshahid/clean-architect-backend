@@ -28,7 +28,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
 
     public async Task<ProductVariant?> GetDetailByIdWithProductAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.ProductDetails
+        return await _dbContext.ProductVariants
             .AsNoTracking()
             .Include(d => d.Product)
             .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
