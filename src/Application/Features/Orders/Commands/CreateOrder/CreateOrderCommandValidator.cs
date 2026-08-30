@@ -28,13 +28,22 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.DiscountAmount)
             .GreaterThanOrEqualTo(0);
 
+        RuleFor(x => x.PaymentMethod)
+            .IsInEnum();
+
+        RuleFor(x => x.TransactionReference)
+            .MaximumLength(100);
+
+        RuleFor(x => x.ProviderNo)
+            .MaximumLength(50);
+
         RuleFor(x => x.Lines)
             .NotEmpty()
             .WithMessage("At least one order line is required.");
 
         RuleForEach(x => x.Lines).ChildRules(line =>
         {
-            line.RuleFor(l => l.ProductDetailId).NotEmpty();
+            line.RuleFor(l => l.ProductVariantId).NotEmpty();
             line.RuleFor(l => l.Quantity).GreaterThan(0);
         });
     }

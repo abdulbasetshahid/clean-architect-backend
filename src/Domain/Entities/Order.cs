@@ -17,7 +17,6 @@ public class Order : IEntity<Guid>
     public required string ShippingAddress {get; set; }
 
     public DateTime OrderDate { get; set; }
-    public DateTime? DeliveryDate { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
     public decimal SubTotal { get; set; }
@@ -32,5 +31,7 @@ public class Order : IEntity<Guid>
 
     public bool IsPaid { get; set; }
 
-    public ICollection<OrderItem> OrderDetails { get; set; } = default!;
+    public ICollection<OrderItem> OrderDetails { get; set; } = [];
+
+    public ICollection<Payment> Payments { get; set; } = [];
 }

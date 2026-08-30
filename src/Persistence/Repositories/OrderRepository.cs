@@ -17,6 +17,8 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
             .Include(o => o.OrderDetails)
                 .ThenInclude(d => d.ProductVariant)
                     .ThenInclude(d => d.Product)
+            .Include(o => o.Payments)
+                .ThenInclude(p => p.PaymentProvider)
             .Where(o => o.Id == id);
 
         if (asNoTracking)

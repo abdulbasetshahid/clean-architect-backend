@@ -40,28 +40,13 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
             decimal subTotal = 0;
             foreach (var line in request.Lines)
             {
-                var detail = await _productRepository.GetDetailByIdWithProductAsync(line.ProductDetailId, cancellationToken);
-                if (detail is null)
-                    throw new NotFoundException(nameof(ProductVariant), line.ProductDetailId);
+                var variant = await _productRepository.GetVariantByIdWithProductAsync(line.ProductVariantId, cancellationToken);
+                if (variant is null)
+                    throw new NotFoundException(nameof(ProductVariant), line.ProductVariantId);
 
-                var productName = detail.Product.Name;
-
-                if (!detail.InStock)
-                    throw new BadRequestException($"Product '{productName}' is not in stock.");
-
-                var unitPrice = detail.Price;
-                var lineTotal = unitPrice * line.Quantity;
-                subTotal += lineTotal;
-
-                order.OrderDetails.Add(new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    OrderId = order.Id,
-                    ProductVariantId = detail.Id,
-                    Quantity = line.Quantity,
-                    UnitPrice = unitPrice,
-                    TotalPrice = lineTotal
-                });
+                var item = OrderItemFactory.Create(order.Id, variant, line.Quantity);
+                subTotal += item.TotalPrice;
+                order.OrderDetails.Add(item);
             }
 
             order.SubTotal = subTotal;

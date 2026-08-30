@@ -1,3 +1,5 @@
+using EShop.Application.Features.Products.Queries;
+
 namespace EShop.Application.Features.Products.Queries.GetProductById;
 
 public class ProductDetailVm
@@ -12,4 +14,5 @@ public class ProductDetailVm
     public string? ImageUrl { get; set; }
     public Guid CategoryId { get; set; }
     public required string CategoryName { get; set; }
+    public IReadOnlyList<ProductVariantVm> Variants { get; set; } = [];
 }

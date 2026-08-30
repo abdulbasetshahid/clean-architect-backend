@@ -26,7 +26,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<ProductVariant?> GetDetailByIdWithProductAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ProductVariant?> GetVariantByIdWithProductAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _dbContext.ProductVariants
             .AsNoTracking()

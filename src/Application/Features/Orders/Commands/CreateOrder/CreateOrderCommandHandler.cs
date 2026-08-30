@@ -26,40 +26,27 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var orderId = Guid.NewGuid();
-        var orderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}";
+        var orderNumber = await CreateUniqueOrderNumberAsync(cancellationToken);
 
-        var details = new List<OrderItem>();
+        var items = new List<OrderItem>();
         decimal subTotal = 0;
 
         foreach (var line in request.Lines)
         {
-            var detail = await _productRepository.GetDetailByIdWithProductAsync(line.ProductDetailId, cancellationToken);
-            if (detail is null)
-                throw new NotFoundException(nameof(ProductVariant), line.ProductDetailId);
+            var variant = await _productRepository.GetVariantByIdWithProductAsync(line.ProductVariantId, cancellationToken);
+            if (variant is null)
+                throw new NotFoundException(nameof(ProductVariant), line.ProductVariantId);
 
-            var productName = detail.Product.Name;
-
-            if (!detail.InStock)
-                throw new BadRequestException($"Product '{productName}' is not in stock.");
-
-            var unitPrice = detail.Price;
-            var lineTotal = unitPrice * line.Quantity;
-            subTotal += lineTotal;
-
-            details.Add(new OrderItem
-            {
-                Id = Guid.NewGuid(),
-                OrderId = orderId,
-                ProductVariantId = detail.Id,
-                Quantity = line.Quantity,
-                UnitPrice = unitPrice,
-                TotalPrice = lineTotal
-            });
+            var item = OrderItemFactory.Create(orderId, variant, line.Quantity);
+            subTotal += item.TotalPrice;
+            items.Add(item);
         }
 
         var totalAmount = subTotal + request.TaxAmount + request.ShippingAmount - request.DiscountAmount;
         if (totalAmount < 0)
             totalAmount = 0;
+
+        var providerTypeId = request.ProviderTypeId ?? PaymentProviderIds.FromMethod(request.PaymentMethod);
 
         var order = new Order
         {
@@ -77,11 +64,41 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             DiscountAmount = request.DiscountAmount,
             TotalAmount = totalAmount,
             IsPaid = false,
-            OrderDetails = details,
-            DeliveryDate = null,         
+            OrderDetails = items,
+            Payments =
+            [
+                new Payment
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = orderId,
+                    Status = PaymentStatus.Pending,
+                    Method = request.PaymentMethod,
+                    Amount = totalAmount,
+                    TransactionReference = string.IsNullOrWhiteSpace(request.TransactionReference)
+                        ? null
+                        : request.TransactionReference.Trim(),
+                    ProviderNo = string.IsNullOrWhiteSpace(request.ProviderNo)
+                        ? null
+                        : request.ProviderNo.Trim(),
+                    ProviderTypeId = providerTypeId
+                }
+            ]
         };
 
         await _orderRepository.AddAsync(order);
         return order.Id;
+    }
+
+    private async Task<string> CreateUniqueOrderNumberAsync(CancellationToken cancellationToken)
+    {
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            var suffix = Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
+            var orderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}-{suffix}";
+            if (!await _orderRepository.OrderNumberExistsAsync(orderNumber, cancellationToken))
+                return orderNumber;
+        }
+
+        throw new BadRequestException("Could not generate a unique order number. Please retry.");
     }
 }

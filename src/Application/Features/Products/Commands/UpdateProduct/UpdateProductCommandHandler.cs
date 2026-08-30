@@ -1,5 +1,6 @@
 using EShop.Application.Contracts.Persistence;
 using EShop.Application.Exceptions;
+using EShop.Application.Features.Products;
 using EShop.Domain.Entities;
 using MediatR;
 
@@ -41,6 +42,59 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         product.ImageUrl = NormalizeOptional(request.ImageUrl);
         product.CategoryId = request.CategoryId;
 
+        if (request.Variants is { Count: > 0 })
+            SyncVariants(product, request.Variants);
+        else
+            UpdateDefaultVariant(product, request);
+
+        await _productRepository.UpdateAsync(product);
+        return Unit.Value;
+    }
+
+    private static void SyncVariants(Product product, IReadOnlyList<ProductVariantDto> variants)
+    {
+        var incomingIds = variants
+            .Where(v => v.Id.HasValue && v.Id.Value != Guid.Empty)
+            .Select(v => v.Id!.Value)
+            .ToHashSet();
+
+        foreach (var existing in product.ProductVariants)
+        {
+            if (!incomingIds.Contains(existing.Id))
+                existing.IsActive = false;
+        }
+
+        foreach (var input in variants)
+        {
+            if (input.Id is Guid id && id != Guid.Empty)
+            {
+                var existing = product.ProductVariants.FirstOrDefault(v => v.Id == id)
+                    ?? throw new NotFoundException(nameof(ProductVariant), id);
+
+                existing.VariationName = input.VariationName.Trim();
+                existing.Description = NormalizeOptional(input.Description);
+                existing.Price = input.Price;
+                existing.InStock = input.InStock;
+                existing.IsActive = input.IsActive;
+            }
+            else
+            {
+                product.ProductVariants.Add(new ProductVariant
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = product.Id,
+                    VariationName = input.VariationName.Trim(),
+                    Description = NormalizeOptional(input.Description),
+                    Price = input.Price,
+                    InStock = input.InStock,
+                    IsActive = input.IsActive
+                });
+            }
+        }
+    }
+
+    private static void UpdateDefaultVariant(Product product, UpdateProductCommand request)
+    {
         var detail = product.ProductVariants.FirstOrDefault();
         if (detail is null)
         {
@@ -48,7 +102,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
             {
                 Id = Guid.NewGuid(),
                 ProductId = product.Id,
-                VariationName = product.Name
+                VariationName = product.Name,
+                IsActive = true
             };
             product.ProductVariants.Add(detail);
         }
@@ -57,9 +112,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         detail.Description = NormalizeOptional(request.Description);
         detail.Price = request.Price;
         detail.InStock = request.InStock;
-
-        await _productRepository.UpdateAsync(product);
-        return Unit.Value;
+        detail.IsActive = true;
     }
 
     private static string? NormalizeOptional(string? value)

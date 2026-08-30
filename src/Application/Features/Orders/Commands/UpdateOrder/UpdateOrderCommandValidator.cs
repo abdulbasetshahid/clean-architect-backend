@@ -38,7 +38,7 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
         {
             RuleForEach(x => x.Lines!).ChildRules(line =>
             {
-                line.RuleFor(l => l.ProductDetailId).NotEmpty();
+                line.RuleFor(l => l.ProductVariantId).NotEmpty();
                 line.RuleFor(l => l.Quantity).GreaterThan(0);
             });
         });

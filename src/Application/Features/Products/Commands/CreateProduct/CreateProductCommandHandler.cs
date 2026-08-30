@@ -31,21 +31,40 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             IsBestSeller = request.IsBestSeller,
             ImageUrl = NormalizeOptional(request.ImageUrl),
             CategoryId = request.CategoryId,
-            ProductVariants =
-            [
-                new ProductVariant
-                {
-                    Id = Guid.NewGuid(),
-                    VariationName = request.Name.Trim(),
-                    Description = NormalizeOptional(request.Description),
-                    Price = request.Price,
-                    InStock = request.InStock
-                }
-            ]
+            ProductVariants = BuildVariants(request)
         };
 
         await _productRepository.AddAsync(product);
         return product.Id;
+    }
+
+    private static List<ProductVariant> BuildVariants(CreateProductCommand request)
+    {
+        if (request.Variants is { Count: > 0 })
+        {
+            return request.Variants.Select(v => new ProductVariant
+            {
+                Id = Guid.NewGuid(),
+                VariationName = v.VariationName.Trim(),
+                Description = NormalizeOptional(v.Description),
+                Price = v.Price,
+                InStock = v.InStock,
+                IsActive = v.IsActive
+            }).ToList();
+        }
+
+        return
+        [
+            new ProductVariant
+            {
+                Id = Guid.NewGuid(),
+                VariationName = request.Name.Trim(),
+                Description = NormalizeOptional(request.Description),
+                Price = request.Price,
+                InStock = request.InStock,
+                IsActive = true
+            }
+        ];
     }
 
     private static string? NormalizeOptional(string? value)

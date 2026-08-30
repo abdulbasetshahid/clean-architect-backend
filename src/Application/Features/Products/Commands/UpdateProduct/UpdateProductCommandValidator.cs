@@ -34,8 +34,16 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .Must(s => string.IsNullOrEmpty(s) || s!.Length <= ProductConstraints.ImageUrlMaxLength)
             .WithMessage($"Image URL must be at most {ProductConstraints.ImageUrlMaxLength} characters.");
 
-        RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Price must be zero or greater.");
+        When(x => x.Variants is null || x.Variants.Count == 0, () =>
+        {
+            RuleFor(x => x.Price)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Price must be zero or greater.");
+        });
+
+        When(x => x.Variants is { Count: > 0 }, () =>
+        {
+            RuleForEach(x => x.Variants).SetValidator(new ProductVariantDtoValidator());
+        });
     }
 }

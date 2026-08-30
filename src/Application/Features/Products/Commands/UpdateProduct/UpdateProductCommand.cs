@@ -1,3 +1,4 @@
+using EShop.Application.Features.Products;
 using MediatR;
 
 namespace EShop.Application.Features.Products.Commands.UpdateProduct;
@@ -14,4 +15,6 @@ public class UpdateProductCommand : IRequest<Unit>
     public bool IsBestSeller { get; set; }
     public string? ImageUrl { get; set; }
     public Guid CategoryId { get; set; }
+
+    public IReadOnlyList<ProductVariantDto>? Variants { get; set; }
 }

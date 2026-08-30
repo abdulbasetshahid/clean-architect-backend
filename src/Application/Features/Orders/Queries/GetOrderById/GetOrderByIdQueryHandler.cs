@@ -25,6 +25,9 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
             Id = order.Id,
             OrderCode = order.OrderNumber,
             OrderDate = order.OrderDate,
+            ShippedAt = order.ShippedAt,
+            DeliveredAt = order.DeliveredAt,
+            CancelledAt = order.CancelledAt,
             Status = order.Status.ToString(),
             CustomerName = order.CustomerName,
             CustomerPhone = order.CustomerPhone,
@@ -37,11 +40,25 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
             IsPaid = order.IsPaid,
             Lines = order.OrderDetails.Select(d => new OrderLineVm
             {
-                ProductDetailId = d.ProductVariantId,
-                ProductName = d.ProductVariant.Product.Name,
+                ProductId = d.ProductId,
+                ProductVariantId = d.ProductVariantId,
+                ProductName = d.ProductName ?? d.ProductVariant.Product.Name,
+                VariationName = d.ProductVariant.VariationName,
                 Quantity = d.Quantity,
                 UnitPrice = d.UnitPrice,
-                LineTotal = d.TotalPrice
+                TotalPrice = d.TotalPrice
+            }).ToList(),
+            Payments = order.Payments.Select(p => new OrderPaymentVm
+            {
+                Id = p.Id,
+                Status = p.Status.ToString(),
+                Method = p.Method.ToString(),
+                Amount = p.Amount,
+                TransactionReference = p.TransactionReference,
+                ProviderNo = p.ProviderNo,
+                ProviderTypeId = p.ProviderTypeId,
+                ProviderName = p.PaymentProvider?.ProviderName,
+                PaidAt = p.PaidAt
             }).ToList()
         };
     }

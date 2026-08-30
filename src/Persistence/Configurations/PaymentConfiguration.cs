@@ -20,7 +20,7 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.HasIndex(e => e.TransactionReference);
 
         builder.HasOne(e => e.Order)
-            .WithMany()
+            .WithMany(o => o.Payments)
             .HasForeignKey(e => e.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 
