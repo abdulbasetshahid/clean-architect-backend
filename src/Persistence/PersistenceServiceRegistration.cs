@@ -23,6 +23,7 @@ namespace EShop.Persistence
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IDeliveryOptionRepository, DeliveryOptionRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
             services.AddScoped<IOrderTypeRepository, OrderTypeRepository>();

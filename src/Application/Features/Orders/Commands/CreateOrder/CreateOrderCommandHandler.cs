@@ -11,15 +11,18 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IDeliveryOptionRepository _deliveryOptionRepository;
     private readonly ICurrentUserService _currentUserService;
 
     public CreateOrderCommandHandler(
         IOrderRepository orderRepository,
         IProductRepository productRepository,
+        IDeliveryOptionRepository deliveryOptionRepository,
         ICurrentUserService currentUserService)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _deliveryOptionRepository = deliveryOptionRepository;
         _currentUserService = currentUserService;
     }
 
@@ -27,6 +30,10 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
     {
         var orderId = Guid.NewGuid();
         var orderNumber = await CreateUniqueOrderNumberAsync(cancellationToken);
+        var deliveryOption = await DeliveryCostResolver.GetActiveAsync(
+            _deliveryOptionRepository,
+            request.DeliveryOptionId,
+            cancellationToken);
 
         var items = new List<OrderItem>();
         decimal subTotal = 0;
@@ -42,10 +49,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             items.Add(item);
         }
 
-        var totalAmount = subTotal + request.TaxAmount + request.ShippingAmount - request.DiscountAmount;
-        if (totalAmount < 0)
-            totalAmount = 0;
-
+        var totalAmount = OrderTotals.Calculate(subTotal, request.TaxAmount, deliveryOption.Cost, request.DiscountAmount);
         var providerTypeId = request.ProviderTypeId ?? PaymentProviderIds.FromMethod(request.PaymentMethod);
 
         var order = new Order
@@ -58,9 +62,10 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             ShippingAddress = request.ShippingAddress.Trim(),
             OrderDate = DateTime.UtcNow,
             Status = OrderStatus.Pending,
+            DeliveryOptionId = deliveryOption.Id,
             SubTotal = subTotal,
             TaxAmount = request.TaxAmount,
-            DeliveryCost = request.ShippingAmount,
+            DeliveryCost = deliveryOption.Cost,
             DiscountAmount = request.DiscountAmount,
             TotalAmount = totalAmount,
             IsPaid = false,

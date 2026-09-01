@@ -13,9 +13,9 @@ public class CreateOrderCommand : IRequest<Guid>
 
     public decimal TaxAmount { get; set; }
 
-    public decimal ShippingAmount { get; set; }
-
     public decimal DiscountAmount { get; set; }
+
+    public Guid DeliveryOptionId { get; set; }
 
     public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.CashOnDelivery;
 

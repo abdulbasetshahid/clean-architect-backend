@@ -13,4 +13,8 @@ global using EShop.Application.Features.Products.Commands.DeleteProduct;
 global using EShop.Application.Features.Products.Commands.UpdateProduct;
 global using EShop.Application.Features.Products.Queries.GetProductById;
 global using EShop.Application.Features.Products.Queries.GetProducts;
+global using EShop.Application.Features.Delivery.Commands.CreateDeliveryOption;
+global using EShop.Application.Features.Delivery.Commands.UpdateDeliveryOption;
+global using EShop.Application.Features.Delivery.Queries.GetDeliveryOptionById;
+global using EShop.Application.Features.Delivery.Queries.GetDeliveryOptions;
 global using EShop.Application.Exceptions;

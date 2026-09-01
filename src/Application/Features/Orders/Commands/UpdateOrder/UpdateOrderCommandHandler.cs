@@ -9,13 +9,16 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IDeliveryOptionRepository _deliveryOptionRepository;
 
     public UpdateOrderCommandHandler(
         IOrderRepository orderRepository,
-        IProductRepository productRepository)
+        IProductRepository productRepository,
+        IDeliveryOptionRepository deliveryOptionRepository)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _deliveryOptionRepository = deliveryOptionRepository;
     }
 
     public async Task<Unit> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
@@ -28,10 +31,20 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
         order.CustomerPhone = request.CustomerPhone.Trim();
         order.ShippingAddress = request.ShippingAddress.Trim();
         order.TaxAmount = request.TaxAmount;
-        order.DeliveryCost = request.ShippingAmount;
         order.DiscountAmount = request.DiscountAmount;
         order.IsPaid = request.IsPaid;
         order.UserId = request.UserId;
+
+        if (request.DeliveryOptionId.HasValue)
+        {
+            var deliveryOption = await DeliveryCostResolver.GetActiveAsync(
+                _deliveryOptionRepository,
+                request.DeliveryOptionId.Value,
+                cancellationToken);
+
+            order.DeliveryOptionId = deliveryOption.Id;
+            order.DeliveryCost = deliveryOption.Cost;
+        }
 
         if (request.Lines is not null)
         {
@@ -52,9 +65,11 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Uni
             order.SubTotal = subTotal;
         }
 
-        order.TotalAmount = order.SubTotal + order.TaxAmount + order.DeliveryCost - order.DiscountAmount;
-        if (order.TotalAmount < 0)
-            order.TotalAmount = 0;
+        order.TotalAmount = OrderTotals.Calculate(
+            order.SubTotal,
+            order.TaxAmount,
+            order.DeliveryCost,
+            order.DiscountAmount);
 
         await _orderRepository.CommitAsync(cancellationToken);
         return Unit.Value;

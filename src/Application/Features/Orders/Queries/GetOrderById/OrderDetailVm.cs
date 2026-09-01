@@ -28,6 +28,12 @@ public class OrderDetailVm
 
     public decimal ShippingAmount { get; set; }
 
+    public Guid? DeliveryOptionId { get; set; }
+
+    public string? DeliveryOptionName { get; set; }
+
+    public string? DeliveryZone { get; set; }
+
     public decimal DiscountAmount { get; set; }
 
     public decimal TotalAmount { get; set; }

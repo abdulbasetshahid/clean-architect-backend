@@ -22,11 +22,11 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.TaxAmount)
             .GreaterThanOrEqualTo(0);
 
-        RuleFor(x => x.ShippingAmount)
-            .GreaterThanOrEqualTo(0);
-
         RuleFor(x => x.DiscountAmount)
             .GreaterThanOrEqualTo(0);
+
+        RuleFor(x => x.DeliveryOptionId)
+            .NotEmpty();
 
         RuleFor(x => x.PaymentMethod)
             .IsInEnum();

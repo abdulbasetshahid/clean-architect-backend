@@ -26,5 +26,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasIndex(e => e.UserId);
         builder.HasIndex(e => e.Status);
+        builder.HasIndex(e => e.DeliveryOptionId);
+
+        builder.HasOne(e => e.DeliveryOption)
+            .WithMany(o => o.Orders)
+            .HasForeignKey(e => e.DeliveryOptionId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

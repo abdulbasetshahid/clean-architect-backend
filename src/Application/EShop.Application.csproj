@@ -20,9 +20,5 @@
     <ProjectReference Include="..\Domain\EShop.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Delivery\Commands\" />
-    <Folder Include="Features\Delivery\Queries\" />
-  </ItemGroup>
 
 </Project>

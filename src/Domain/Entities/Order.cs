@@ -19,6 +19,8 @@ public class Order : IEntity<Guid>
     public DateTime OrderDate { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
+    public Guid? DeliveryOptionId { get; set; }
+
     public decimal SubTotal { get; set; }
     public decimal TaxAmount { get; set; }
     public decimal DiscountAmount { get; set; }
@@ -30,6 +32,8 @@ public class Order : IEntity<Guid>
     public DateTime? CancelledAt { get; set; }
 
     public bool IsPaid { get; set; }
+
+    public DeliveryOption? DeliveryOption { get; set; }
 
     public ICollection<OrderItem> OrderDetails { get; set; } = [];
 

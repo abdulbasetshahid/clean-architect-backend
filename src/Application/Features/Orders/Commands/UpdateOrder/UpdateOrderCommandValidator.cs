@@ -24,11 +24,13 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
         RuleFor(x => x.TaxAmount)
             .GreaterThanOrEqualTo(0);
 
-        RuleFor(x => x.ShippingAmount)
-            .GreaterThanOrEqualTo(0);
-
         RuleFor(x => x.DiscountAmount)
             .GreaterThanOrEqualTo(0);
+
+        When(x => x.DeliveryOptionId.HasValue, () =>
+        {
+            RuleFor(x => x.DeliveryOptionId!.Value).NotEmpty();
+        });
 
         RuleFor(x => x.Lines)
             .Must(lines => lines is null || lines.Count > 0)
