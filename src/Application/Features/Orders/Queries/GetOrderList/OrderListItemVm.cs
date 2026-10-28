@@ -12,6 +12,8 @@ public class OrderListItemVm
 
     public decimal TotalPrice { get; set; }
 
+    public bool IsPaid { get; set; }
+
     public required string UserName { get; set; }
 
     public required string UserPhone { get; set; }

@@ -2,7 +2,7 @@
 
 namespace EShop.Domain.Entities;
 
-public class ProductDetail : AuditableEntity, IEntity<Guid>
+public class ProductVariant : AuditableEntity, IEntity<Guid>
     {
         public Guid Id { get; set; }
         public required string VariationName { get; set; }
@@ -10,5 +10,7 @@ public class ProductDetail : AuditableEntity, IEntity<Guid>
         public decimal Price { get; set; } = 0;
         public bool InStock { get; set; } = true;
         public Guid ProductId { get; set; }
+
+        public bool IsActive { get; set; }
         public Product Product { get; set; } = null!;
     }

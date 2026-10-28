@@ -2,9 +2,9 @@
 
 namespace EShop.Domain.Entities;
 
-public class OrderType : IEntity<int>
+public class PaymentProvider : IEntity<int>
 {
     public int Id { get; set; }
 
-    public required string Type { get; set; }
+    public required string ProviderName { get; set; }
 }

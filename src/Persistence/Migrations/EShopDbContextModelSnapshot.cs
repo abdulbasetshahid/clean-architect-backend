@@ -17,7 +17,7 @@ namespace EShop.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -51,11 +51,67 @@ namespace EShop.Persistence.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("EShop.Domain.Entities.DeliveryOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Cost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Zone")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Zone");
+
+                    b.ToTable("DeliveryOptions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8f3c1a2e-4b6d-4e91-9c07-1a2b3c4d5e6f"),
+                            Cost = 80m,
+                            IsActive = true,
+                            Name = "Inside Dhaka",
+                            SortOrder = 1,
+                            Zone = 0
+                        },
+                        new
+                        {
+                            Id = new Guid("9a4d2b3f-5c7e-4f02-ad18-2b3c4d5e6f70"),
+                            Cost = 150m,
+                            IsActive = true,
+                            Name = "Outside Dhaka",
+                            SortOrder = 2,
+                            Zone = 1
+                        });
+                });
+
             modelBuilder.Entity("EShop.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerName")
                         .IsRequired()
@@ -67,12 +123,15 @@ namespace EShop.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("DeliveryDate")
+                    b.Property<DateTime?>("DeliveredAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("DeliveryFee")
+                    b.Property<decimal>("DeliveryCost")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("DeliveryOptionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 2)
@@ -88,6 +147,9 @@ namespace EShop.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("ShippedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ShippingAddress")
                         .IsRequired()
@@ -114,30 +176,43 @@ namespace EShop.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DeliveryOptionId");
+
                     b.HasIndex("OrderNumber")
                         .IsUnique();
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders", (string)null);
                 });
 
-            modelBuilder.Entity("EShop.Domain.Entities.OrderDetails", b =>
+            modelBuilder.Entity("EShop.Domain.Entities.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("LineTotal")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductDetailId")
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProductName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
@@ -147,30 +222,102 @@ namespace EShop.Persistence.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductDetailId");
+                    b.HasIndex("ProductVariantId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderItems", (string)null);
                 });
 
-            modelBuilder.Entity("EShop.Domain.Entities.OrderType", b =>
+            modelBuilder.Entity("EShop.Domain.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Method")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProviderNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ProviderTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionReference")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProviderTypeId");
+
+                    b.HasIndex("TransactionReference");
+
+                    b.ToTable("Payments", (string)null);
+                });
+
+            modelBuilder.Entity("EShop.Domain.Entities.PaymentProvider", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("ProviderName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderTypes", (string)null);
+                    b.HasIndex("ProviderName")
+                        .IsUnique();
+
+                    b.ToTable("PaymentProviders", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Type = "Standard"
+                            ProviderName = "CashOnDelivery"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ProviderName = "bKash"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ProviderName = "Nagad"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ProviderName = "CreditCard"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ProviderName = "DebitCard"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ProviderName = "BankTransfer"
                         });
                 });
 
@@ -219,7 +366,7 @@ namespace EShop.Persistence.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("EShop.Domain.Entities.ProductDetail", b =>
+            modelBuilder.Entity("EShop.Domain.Entities.ProductVariant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,6 +385,11 @@ namespace EShop.Persistence.Migrations
 
                     b.Property<bool>("InStock")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -261,7 +413,7 @@ namespace EShop.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDetails", (string)null);
+                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("EShop.Persistence.ApplicationUser", b =>
@@ -470,7 +622,17 @@ namespace EShop.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EShop.Domain.Entities.OrderDetails", b =>
+            modelBuilder.Entity("EShop.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("EShop.Domain.Entities.DeliveryOption", "DeliveryOption")
+                        .WithMany("Orders")
+                        .HasForeignKey("DeliveryOptionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DeliveryOption");
+                });
+
+            modelBuilder.Entity("EShop.Domain.Entities.OrderItem", b =>
                 {
                     b.HasOne("EShop.Domain.Entities.Order", "Order")
                         .WithMany("OrderDetails")
@@ -478,15 +640,34 @@ namespace EShop.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EShop.Domain.Entities.ProductDetail", "ProductDetail")
+                    b.HasOne("EShop.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany()
-                        .HasForeignKey("ProductDetailId")
+                        .HasForeignKey("ProductVariantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Order");
 
-                    b.Navigation("ProductDetail");
+                    b.Navigation("ProductVariant");
+                });
+
+            modelBuilder.Entity("EShop.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("EShop.Domain.Entities.Order", "Order")
+                        .WithMany("Payments")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EShop.Domain.Entities.PaymentProvider", "PaymentProvider")
+                        .WithMany()
+                        .HasForeignKey("ProviderTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("PaymentProvider");
                 });
 
             modelBuilder.Entity("EShop.Domain.Entities.Product", b =>
@@ -500,10 +681,10 @@ namespace EShop.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("EShop.Domain.Entities.ProductDetail", b =>
+            modelBuilder.Entity("EShop.Domain.Entities.ProductVariant", b =>
                 {
                     b.HasOne("EShop.Domain.Entities.Product", "Product")
-                        .WithMany("ProductDetails")
+                        .WithMany("ProductVariants")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -567,14 +748,21 @@ namespace EShop.Persistence.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("EShop.Domain.Entities.DeliveryOption", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("EShop.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("EShop.Domain.Entities.Product", b =>
                 {
-                    b.Navigation("ProductDetails");
+                    b.Navigation("ProductVariants");
                 });
 #pragma warning restore 612, 618
         }

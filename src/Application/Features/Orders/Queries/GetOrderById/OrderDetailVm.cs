@@ -8,6 +8,12 @@ public class OrderDetailVm
 
     public DateTime OrderDate { get; set; }
 
+    public DateTime? ShippedAt { get; set; }
+
+    public DateTime? DeliveredAt { get; set; }
+
+    public DateTime? CancelledAt { get; set; }
+
     public required string Status { get; set; }
 
     public required string CustomerName { get; set; }
@@ -22,11 +28,19 @@ public class OrderDetailVm
 
     public decimal ShippingAmount { get; set; }
 
+    public Guid? DeliveryOptionId { get; set; }
+
+    public string? DeliveryOptionName { get; set; }
+
+    public string? DeliveryZone { get; set; }
+
     public decimal DiscountAmount { get; set; }
 
     public decimal TotalAmount { get; set; }
 
     public bool IsPaid { get; set; }
 
-    public IReadOnlyList<OrderLineVm> Lines { get; set; } = Array.Empty<OrderLineVm>();
+    public IReadOnlyList<OrderLineVm> Lines { get; set; } = [];
+
+    public IReadOnlyList<OrderPaymentVm> Payments { get; set; } = [];
 }

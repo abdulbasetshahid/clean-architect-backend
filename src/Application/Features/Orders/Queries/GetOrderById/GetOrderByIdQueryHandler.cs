@@ -25,23 +25,43 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
             Id = order.Id,
             OrderCode = order.OrderNumber,
             OrderDate = order.OrderDate,
+            ShippedAt = order.ShippedAt,
+            DeliveredAt = order.DeliveredAt,
+            CancelledAt = order.CancelledAt,
             Status = order.Status.ToString(),
             CustomerName = order.CustomerName,
             CustomerPhone = order.CustomerPhone,
             ShippingAddress = order.ShippingAddress,
             SubTotal = order.SubTotal,
             TaxAmount = order.TaxAmount,
-            ShippingAmount = order.DeliveryFee,
+            ShippingAmount = order.DeliveryCost,
+            DeliveryOptionId = order.DeliveryOptionId,
+            DeliveryOptionName = order.DeliveryOption?.Name,
+            DeliveryZone = order.DeliveryOption?.Zone.ToString(),
             DiscountAmount = order.DiscountAmount,
             TotalAmount = order.TotalAmount,
             IsPaid = order.IsPaid,
             Lines = order.OrderDetails.Select(d => new OrderLineVm
             {
-                ProductDetailId = d.ProductDetailId,
-                ProductName = d.ProductDetail.Product.Name,
+                ProductId = d.ProductId,
+                ProductVariantId = d.ProductVariantId,
+                ProductName = d.ProductName ?? d.ProductVariant.Product.Name,
+                VariationName = d.ProductVariant.VariationName,
                 Quantity = d.Quantity,
                 UnitPrice = d.UnitPrice,
-                LineTotal = d.LineTotal
+                TotalPrice = d.TotalPrice
+            }).ToList(),
+            Payments = order.Payments.Select(p => new OrderPaymentVm
+            {
+                Id = p.Id,
+                Status = p.Status.ToString(),
+                Method = p.Method.ToString(),
+                Amount = p.Amount,
+                TransactionReference = p.TransactionReference,
+                ProviderNo = p.ProviderNo,
+                ProviderTypeId = p.ProviderTypeId,
+                ProviderName = p.PaymentProvider?.ProviderName,
+                PaidAt = p.PaidAt
             }).ToList()
         };
     }

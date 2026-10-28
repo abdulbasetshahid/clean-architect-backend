@@ -27,6 +27,7 @@ public class GetOrderListQueryHandler : IRequestHandler<GetOrderListQuery, Paged
             TotalProductQuantity = o.OrderDetails.Sum(d => d.Quantity),
             Status = o.Status.ToString(),
             TotalPrice = o.TotalAmount,
+            IsPaid = o.IsPaid,
             UserName = o.CustomerName,
             UserPhone = o.CustomerPhone
         }).ToList();

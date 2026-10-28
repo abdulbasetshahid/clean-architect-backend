@@ -18,5 +18,5 @@ public class Product : AuditableEntity, IEntity<Guid>
 
     public Category Category { get; set; } = default!;
 
-    public ICollection<ProductDetail> ProductDetails { get; set; } = [];
+    public ICollection<ProductVariant> ProductVariants { get; set; } = [];
 }
