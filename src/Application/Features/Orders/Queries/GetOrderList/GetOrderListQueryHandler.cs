@@ -1,5 +1,6 @@
 using EShop.Application.Common.Models;
 using EShop.Application.Contracts.Persistence;
+using EShop.Domain.Entities;
 using MediatR;
 
 namespace EShop.Application.Features.Orders.Queries.GetOrderList;
@@ -20,17 +21,7 @@ public class GetOrderListQueryHandler : IRequestHandler<GetOrderListQuery, Paged
             request.PageSize,
             cancellationToken);
 
-        var items = orders.Select(o => new OrderListItemVm
-        {
-            Id = o.Id,
-            OrderCode = o.OrderNumber,
-            TotalProductQuantity = o.OrderDetails.Sum(d => d.Quantity),
-            Status = o.Status.ToString(),
-            TotalPrice = o.TotalAmount,
-            IsPaid = o.IsPaid,
-            UserName = o.CustomerName,
-            UserPhone = o.CustomerPhone
-        }).ToList();
+        var items = orders.Select(Map).ToList();
 
         return new PagedResult<OrderListItemVm>
         {
@@ -40,4 +31,16 @@ public class GetOrderListQueryHandler : IRequestHandler<GetOrderListQuery, Paged
             TotalCount = totalCount
         };
     }
+
+    internal static OrderListItemVm Map(Order order) => new()
+    {
+        Id = order.Id,
+        OrderCode = order.OrderNumber,
+        TotalProductQuantity = order.OrderDetails.Sum(d => d.Quantity),
+        Status = order.Status.ToString(),
+        TotalPrice = order.TotalAmount,
+        IsPaid = order.IsPaid,
+        UserName = order.CustomerName,
+        UserPhone = order.CustomerPhone
+    };
 }

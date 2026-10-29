@@ -20,5 +20,9 @@
     <ProjectReference Include="..\Domain\EShop.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="EShop.Application.Tests" />
+  </ItemGroup>
+
 
 </Project>

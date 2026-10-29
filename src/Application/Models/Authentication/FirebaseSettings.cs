@@ -1,0 +1,8 @@
+namespace EShop.Application.Models.Authentication;
+
+public class FirebaseSettings
+{
+    public string ProjectId { get; set; } = string.Empty;
+
+    public string? CredentialsPath { get; set; }
+}

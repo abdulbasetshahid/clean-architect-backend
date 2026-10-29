@@ -11,6 +11,14 @@ public interface IOrderRepository : IAsyncRepository<Order>
         int pageSize,
         CancellationToken cancellationToken);
 
+    Task<Order?> GetByIdWithDetailsForCustomerAsync(Guid id, string firebaseUid, CancellationToken cancellationToken);
+
+    Task<(IReadOnlyList<Order> Items, int TotalCount)> GetPagedForCustomerAsync(
+        string firebaseUid,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken);
+
     Task CommitAsync(CancellationToken cancellationToken);
 
     Task<bool> OrderNumberExistsAsync(string orderNumber, CancellationToken cancellationToken);

@@ -1,4 +1,5 @@
-﻿using EShop.Application;
+﻿using EShop.Api.Authentication;
+using EShop.Application;
 using EShop.Infrastructure;
 using EShop.Persistence;
 
@@ -12,6 +13,7 @@ namespace EShop.Api
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddPersistenceServices(builder.Configuration);
             builder.Services.AddIdentityServices(builder.Configuration);
+            builder.Services.AddCustomerAuthentication();
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi(options =>

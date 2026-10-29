@@ -338,3 +338,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Firebase / Google service-account credentials
+*firebase-adminsdk*.json
+*service-account*.json
+firebase-credentials*.json

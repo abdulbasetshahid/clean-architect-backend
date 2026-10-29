@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace EShop.Api;
 
 public sealed class GlobalExceptionHandler(
@@ -61,6 +63,13 @@ public sealed class GlobalExceptionHandler(
                 Detail = string.Join("; ", validation.ValidationErrors),
                 Instance = httpContext.Request.Path,
                 Extensions = { ["errors"] = validation.ValidationErrors }
+            },
+            DbUpdateConcurrencyException => new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Conflict",
+                Detail = "The request conflicted with a concurrent update. Please retry.",
+                Instance = httpContext.Request.Path
             },
             UnauthorizedException unauthorized => new ProblemDetails
             {

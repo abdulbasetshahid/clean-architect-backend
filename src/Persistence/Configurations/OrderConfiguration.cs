@@ -23,14 +23,24 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(e => e.DeliveryCost).HasPrecision(18, 2);
         builder.Property(e => e.DiscountAmount).HasPrecision(18, 2);
         builder.Property(e => e.TotalAmount).HasPrecision(18, 2);
+        builder.Property(e => e.CustomerFirebaseUid).HasMaxLength(128);
+        builder.Property(e => e.CustomerEmail).HasMaxLength(256);
+        builder.Property(e => e.CouponCode).HasMaxLength(50);
 
         builder.HasIndex(e => e.UserId);
+        builder.HasIndex(e => e.CustomerFirebaseUid);
+        builder.HasIndex(e => e.CouponId);
         builder.HasIndex(e => e.Status);
         builder.HasIndex(e => e.DeliveryOptionId);
 
         builder.HasOne(e => e.DeliveryOption)
             .WithMany(o => o.Orders)
             .HasForeignKey(e => e.DeliveryOptionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(e => e.Coupon)
+            .WithMany(c => c.Orders)
+            .HasForeignKey(e => e.CouponId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

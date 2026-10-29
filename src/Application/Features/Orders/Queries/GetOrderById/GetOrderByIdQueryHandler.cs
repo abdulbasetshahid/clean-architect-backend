@@ -20,6 +20,11 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
         if (order is null)
             throw new NotFoundException(nameof(Order), request.Id);
 
+        return Map(order);
+    }
+
+    internal static OrderDetailVm Map(Order order)
+    {
         return new OrderDetailVm
         {
             Id = order.Id,

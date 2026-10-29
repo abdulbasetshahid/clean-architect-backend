@@ -19,10 +19,12 @@ namespace EShop.Persistence
 
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ICurrentCustomerService, CurrentCustomerService>();
 
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICouponRepository, CouponRepository>();
             services.AddScoped<IDeliveryOptionRepository, DeliveryOptionRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();

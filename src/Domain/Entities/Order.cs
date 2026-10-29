@@ -8,6 +8,10 @@ public class Order : IEntity<Guid>
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
 
+    public string? CustomerFirebaseUid { get; set; }
+
+    public string? CustomerEmail { get; set; }
+
     public required string CustomerName { get; set; }
 
     public required string CustomerPhone { get; set; }
@@ -20,6 +24,10 @@ public class Order : IEntity<Guid>
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
     public Guid? DeliveryOptionId { get; set; }
+
+    public Guid? CouponId { get; set; }
+
+    public string? CouponCode { get; set; }
 
     public decimal SubTotal { get; set; }
     public decimal TaxAmount { get; set; }
@@ -34,6 +42,8 @@ public class Order : IEntity<Guid>
     public bool IsPaid { get; set; }
 
     public DeliveryOption? DeliveryOption { get; set; }
+
+    public Coupon? Coupon { get; set; }
 
     public ICollection<OrderItem> OrderDetails { get; set; } = [];
 

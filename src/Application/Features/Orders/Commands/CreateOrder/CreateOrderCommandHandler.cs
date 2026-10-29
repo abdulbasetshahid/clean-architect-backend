@@ -29,7 +29,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var orderId = Guid.NewGuid();
-        var orderNumber = await CreateUniqueOrderNumberAsync(cancellationToken);
+        var orderNumber = await OrderNumberGenerator.CreateUniqueAsync(_orderRepository, cancellationToken);
         var deliveryOption = await DeliveryCostResolver.GetActiveAsync(
             _deliveryOptionRepository,
             request.DeliveryOptionId,
@@ -92,18 +92,5 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
 
         await _orderRepository.AddAsync(order);
         return order.Id;
-    }
-
-    private async Task<string> CreateUniqueOrderNumberAsync(CancellationToken cancellationToken)
-    {
-        for (var attempt = 0; attempt < 5; attempt++)
-        {
-            var suffix = Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
-            var orderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}-{suffix}";
-            if (!await _orderRepository.OrderNumberExistsAsync(orderNumber, cancellationToken))
-                return orderNumber;
-        }
-
-        throw new BadRequestException("Could not generate a unique order number. Please retry.");
     }
 }

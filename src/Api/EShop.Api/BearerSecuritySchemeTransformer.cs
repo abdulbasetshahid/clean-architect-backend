@@ -17,7 +17,7 @@ public sealed class BearerSecuritySchemeTransformer : IOpenApiDocumentTransforme
             Type = SecuritySchemeType.Http,
             Scheme = "bearer",
             BearerFormat = "JWT",
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+            Description = "JWT Authorization header using the Bearer scheme. Admin endpoints take the admin JWT from /api/account/login; customer endpoints (/api/orders, /api/customer/orders) take a Firebase ID token. Example: \"Bearer {token}\""
         };
 
         document.Security ??= [];

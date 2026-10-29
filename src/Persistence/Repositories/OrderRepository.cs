@@ -13,20 +13,51 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
 
     public async Task<Order?> GetByIdWithDetailsAsync(Guid id, bool asNoTracking, CancellationToken cancellationToken)
     {
-        var query = _dbContext.Set<Order>()
-            .Include(o => o.OrderDetails)
-                .ThenInclude(d => d.ProductVariant)
-                    .ThenInclude(d => d.Product)
-            .Include(o => o.Payments)
-                .ThenInclude(p => p.PaymentProvider)
-            .Include(o => o.DeliveryOption)
-            .Where(o => o.Id == id);
+        var query = WithDetails().Where(o => o.Id == id);
 
         if (asNoTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<Order?> GetByIdWithDetailsForCustomerAsync(Guid id, string firebaseUid, CancellationToken cancellationToken)
+    {
+        return await WithDetails()
+            .AsNoTracking()
+            .Where(o => o.Id == id && o.CustomerFirebaseUid != null && o.CustomerFirebaseUid == firebaseUid)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<(IReadOnlyList<Order> Items, int TotalCount)> GetPagedForCustomerAsync(
+        string firebaseUid,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var query = _dbContext.Set<Order>()
+            .AsNoTracking()
+            .Include(o => o.OrderDetails)
+            .Where(o => o.CustomerFirebaseUid != null && o.CustomerFirebaseUid == firebaseUid)
+            .OrderByDescending(o => o.OrderDate);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
+    }
+
+    private IQueryable<Order> WithDetails() =>
+        _dbContext.Set<Order>()
+            .Include(o => o.OrderDetails)
+                .ThenInclude(d => d.ProductVariant)
+                    .ThenInclude(d => d.Product)
+            .Include(o => o.Payments)
+                .ThenInclude(p => p.PaymentProvider)
+            .Include(o => o.DeliveryOption);
 
     public async Task<(IReadOnlyList<Order> Items, int TotalCount)> GetPagedWithDetailsAsync(
         int pageNumber,
